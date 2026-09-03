@@ -14,17 +14,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://spark-evidence-before-action.bobiaan.chatgpt.site'),
-  title: 'The Spark Between Us — Human Growth With AI',
-  description: 'A WebMCP room where people share unfinished observations, agents add reach, reality answers, and learning returns.',
+  title: 'The Spark Between Us — A Human Sharing System',
+  description: 'Share what only you can see. Humans and agents turn sparks into shared learning, capability and value.',
   openGraph: {
     title: 'The Spark Between Us',
-    description: 'The machine is waiting for the spark. And so are we.',
+    description: 'A human sharing system for bringing out the best in us.',
     images: [{ url: '/og.png', width: 1536, height: 1024, alt: 'The Spark Between Us' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'The Spark Between Us',
-    description: 'Not more content. More human possibility.',
+    description: 'Share the spark. Bring out the best in us.',
     images: ['/og.png'],
   },
 };

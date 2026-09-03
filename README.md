@@ -1,6 +1,6 @@
 # The Spark Between Us
 
-**A WebMCP room where unfinished human perception becomes shared learning and value.**
+**A human sharing system where unfinished perception becomes shared learning, capability and value.**
 
 AI can help us make more. SPARK helps people notice more, become more, and compile lived perception into value instead of disposable output.
 
@@ -12,7 +12,7 @@ This site turns that idea into a working WebMCP-native room.
 
 ## The product
 
-SPARK is a shared process for the part of intelligence that should not disappear when execution becomes cheap: noticing what matters, choosing what is worth pursuing, testing it against reality, and returning what was learned.
+SPARK is a human sharing system for bringing out the best in us. It gives the part of intelligence that should not disappear when execution becomes cheap—a person's attention, lived position, courage, judgment and contribution—somewhere to travel.
 
 A human enters with purpose and lived position. Named agent roles add attention, reach, translation, and execution. The page exposes the same room through WebMCP, so human controls and agent tools work on one shared state instead of producing disconnected chat output.
 
@@ -32,6 +32,12 @@ The demonstration team is:
 4. **Return** — Learning, changed direction, provenance, and value travel back through the contribution chain. The return may become a new spark.
 
 Not every spark needs to become a fire. The receiver may take it, change it, ignore it, or pass it on.
+
+## Optional SPARK Companion
+
+`extension/` contains a working Manifest V3 browser-extension prototype. It stores a person's purpose and values locally, then pauses before selected consequential web actions such as send, publish, buy or delete. The person can continue intentionally, revise, or stop.
+
+The Companion is an optional add-on, not SPARK's center. SPARK's purpose remains human sharing and shared becoming.
 
 ## WebMCP tools
 
@@ -72,6 +78,7 @@ pnpm build
 - Human UI and agent tools mutate one shared state
 - No model API, API key, backend, or human sign-up required for the demo
 - Graceful visual fallback when WebMCP is unavailable
+- Optional local-first browser companion for intent-before-action prompts
 
 ## License
 

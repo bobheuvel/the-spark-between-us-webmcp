@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SPARK Companion</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="spectrum"></div>
+  <main>
+    <header><span class="mark">◎</span><div><b>SPARK COMPANION</b><small>Intent before action</small></div></header>
+    <h1>Keep your purpose<br><em>inside the action.</em></h1>
+    <label>MY PURPOSE<textarea id="purpose">Help people learn without replacing their judgment.</textarea></label>
+    <label>WHAT I WANT TO PROTECT<textarea id="protect">Consent, credit, human choice.</textarea></label>
+    <fieldset><legend>PAUSE BEFORE</legend><label><input type="checkbox" value="send" checked> Send</label><label><input type="checkbox" value="publish" checked> Publish</label><label><input type="checkbox" value="buy" checked> Buy</label><label><input type="checkbox" value="delete" checked> Delete</label></fieldset>
+    <label class="toggle"><input id="enabled" type="checkbox" checked><span></span> Companion active</label>
+    <button id="save">Save my intent</button>
+    <p id="status" aria-live="polite">Stored locally in this browser.</p>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>

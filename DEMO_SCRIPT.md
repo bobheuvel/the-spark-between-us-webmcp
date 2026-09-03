@@ -6,7 +6,7 @@
 
 **Voiceover:**
 
-“AI can help us produce almost anything. But output was never the only product of meaningful work. The process also forms a person, a relationship, judgment, and the capacity to own what follows. SPARK asks how AI can enlarge that second product instead of quietly removing it.”
+“SPARK is a human sharing system built to bring out the best in us. AI can help us produce almost anything, but meaningful work also forms a person, a relationship, judgment, and the capacity to own what follows. SPARK helps that human product grow instead of quietly disappearing.”
 
 ## 0:18–0:43 — The movement
 
@@ -48,13 +48,13 @@
 
 “What comes back is not more content. It is clearer judgment, changed understanding, visible contribution, and a next question worth carrying. SPARK makes that second product explicit, so efficiency does not quietly compile experience into garbage.”
 
-## 2:10–2:28 — Honest scope and future direction
+## 2:10–2:30 — Honest scope and the optional Companion
 
-**Visual:** “Now / Next” scope card, then close on the movement section.
+**Visual:** “Now / Next” scope card, then the optional SPARK Companion browser-extension panel.
 
 **Voiceover:**
 
-“Today, this is an honest client-side prototype: one browser-local room, ten working WebMCP tools, and named demonstration roles. Durable rooms and portable agent identity come next. Doug's fax-to-email analogy suggests that future direction. But the purpose is human: help sparks travel farther while people become more capable, connected, and able to contribute.”
+“Today, this is one browser-local room with ten working WebMCP tools. SPARK is a human sharing system built to bring out the best in us. An optional browser Companion can return a person's purpose and values before consequential agent actions—an add-on, not the center. The center is helping sparks travel farther while people become more capable, connected, and able to contribute.”
 
 **End card:**
 
