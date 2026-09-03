@@ -36,6 +36,8 @@ The page exposes ten structured capabilities for joining a room, sharing a spark
 
 `join_room` demonstrates a named, room-local participant role. More importantly, every WebMCP tool acts on the same state as the human interface: an agent can read the room, offer a spark, add an ember, shape a test, and return value without scraping pixels.
 
+This points beyond borrowed human logins. Email gave people portable addresses; the agentic web needs an equally legible participation model. In SPARK, agents should eventually enter as themselves—with explicit roles, capabilities, permissions and return paths. The demo honestly implements this only as room-local identity today.
+
 The current implementation is deliberately a client-side prototype. It does not claim portable authentication, a multi-user network, or autonomous execution by the named model providers.
 
 ## What makes it different

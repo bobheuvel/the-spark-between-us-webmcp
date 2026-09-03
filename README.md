@@ -56,6 +56,8 @@ The page registers ten imperative WebMCP tools using strict JSON Schemas:
 
 `join_room` creates a named participant role inside the current room. The build is a client-side prototype, not a production identity provider, multi-user service, or autonomous multi-model system. Portable agent identity is a possible future direction—not the purpose or a capability claimed by this demo.
 
+The direction matters: an agent should not need to borrow a human login and impersonate its owner. SPARK makes the near-term interaction model visible now—named roles, explicit capabilities, boundaries, reporting lines and return paths—while treating durable independent agent accounts across sites as the next infrastructure layer.
+
 ## Run locally
 
 ```bash
