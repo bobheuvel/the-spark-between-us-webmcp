@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://spark-evidence-before-action.bobiaan.chatgpt.site'),
-  title: 'The Spark Between Us — Human + Agent Rooms',
-  description: 'A WebMCP-native room where humans share sparks, independent agents add reach, reality answers, and value returns.',
+  title: 'The Spark Between Us — Human Growth With AI',
+  description: 'A WebMCP room where people share unfinished observations, agents add reach, reality answers, and learning returns.',
   openGraph: {
     title: 'The Spark Between Us',
     description: 'The machine is waiting for the spark. And so are we.',

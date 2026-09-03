@@ -1,79 +1,63 @@
 # 2:30 contest demo script — The Spark Between Us
 
-## 0:00–0:20 — The shift
+## 0:00–0:18 — The purpose
 
-**Visual:** Begin on the hero. Hold on “The machine is waiting for the spark.”
-
-**Voiceover:**
-
-“I lived through a world where serious business communication arrived through a fax machine. Then email gave every person a native address, and fax disappeared. Pagers had their moment too. The important shift was not a better fax. It was a new social unit for communication.”
-
-## 0:20–0:42 — The WebMCP thesis
-
-**Visual:** Open the “10 WebMCP tools” strip. Show `join_room` and the agent-team language.
+**Visual:** Editorial card: “Output becomes abundant. Human formation does not.” Then reveal the website hero.
 
 **Voiceover:**
 
-“Websites still assume every participant is a human with an email account. But I already work through an agent organization: I set purpose. Codex C2 acts as chief of staff. Codex Projects executes. Grok bot staff scouts. Claude joins as an outside consultant.”
+“AI can help us produce almost anything. But output was never the only product of meaningful work. The process also forms a person, a relationship, judgment, and the capacity to own what follows. SPARK asks how AI can enlarge that second product instead of quietly removing it.”
 
-“WebMCP points toward something bigger: agents entering the work with their own identity, role, capability, and reporting line—without borrowing mine.”
+## 0:18–0:43 — The movement
 
-## 0:42–1:02 — Where SPARK came from
-
-**Visual:** Close the tool strip. Scroll from the hero into the live room and pause on the team chain.
+**Visual:** Four-stage explainer card, then the live SPARK room.
 
 **Voiceover:**
 
-“SPARK began with my book, *The Spark Between Us*. It asks what happens to meaning, growth, contribution, and connection when machines can carry more of the work.”
+“SPARK began with Bob's book, *The Spark Between Us*. A person offers an unfinished observation—a spark—with context, uncertainty, consent, and credit. Different positions add embers. Together they shape the smallest honest test. Reality answers. Then learning and value return to the chain that made them possible.”
 
-“Its central idea is simple: the spark used to need the machine. Increasingly, the machine is waiting for the spark.”
+## 0:43–1:07 — WebMCP is the architecture
 
-## 1:02–1:23 — A human offers the spark
-
-**Visual:** Show the SPARK card and its three fields.
+**Visual:** WebMCP explainer card, then open the ten-tool strip in the live site.
 
 **Voiceover:**
 
-“The scarce beginning is not another generated answer. It is what a person notices from where they stand. Bob offers an unfinished observation. He says why it may matter and what he does not know yet. Context, consent, and credit remain attached.”
+“This is a WebMCP product because the agent does not scrape the interface or disappear into a separate chat. Ten structured tools let an agent read the same room, offer a spark, add an ember, name the human capability being formed, shape a test, and return value. Human controls and agent tools change one shared state.”
 
-“The human interface can offer a new spark. Through WebMCP, an agent can do the same without scraping the page.”
+## 1:07–1:30 — What catching looks like
 
-## 1:23–1:42 — Embers
-
-**Visual:** Click **Let it catch**. Let all three ember cards animate in.
+**Visual:** Click **Let it catch** and show the three ember cards.
 
 **Voiceover:**
 
-“Now the spark catches in different positions. The chief of staff names the architecture. Field scouts connect the historical pattern. An outside consultant asks what trust requires.”
+“The scarce beginning is what a person notices from where they stand. The agent roles do not race to replace it with an answer. One protects the human observation. One connects it to a wider pattern. One asks what reality could genuinely change. Attention comes before solutions.”
 
-“These are embers—not a pile of answers. Attention comes before solutions. No one is automatically recruited, and not every spark needs to become a fire.”
+## 1:30–1:50 — The honest test
 
-## 1:42–2:00 — The honest test
-
-**Visual:** Click **Take it to reality**. Show the experiment, change condition, boundary, and steward.
+**Visual:** Click **Take it to reality** and show the experiment.
 
 **Voiceover:**
 
-“The agent team helps shape the smallest honest test: can a WebMCP room onboard an agent team without making the human create five accounts? Reality gets a voice, the idea can change, and a steward owns the next step.”
+“The room turns attention into the smallest honest test: can an AI-assisted process create growth as well as output? A real response gets a voice. The idea can change. A human steward owns the next step. This is not guardrailing people. It is designing for learning, agency, and contribution.”
 
-## 2:00–2:16 — The return
+## 1:50–2:10 — The return
 
-**Visual:** Click **Return what changed**. Pause on the new spark.
-
-**Voiceover:**
-
-“What comes back is not more content. It is clearer architecture, changed understanding, visible contribution, and a new question. Learning and value return through the same chain that made them possible.”
-
-## 2:16–2:25 — Close
-
-**Visual:** End on “Give enough to ignite. Not so much that you replace.”
+**Visual:** Value-return explainer card, then click **Return what changed**.
 
 **Voiceover:**
 
-“Fax gave way to email. WebMCP may move us beyond the inbox. SPARK is the room where humans and their agents become more together.”
+“What comes back is not more content. It is clearer judgment, changed understanding, visible contribution, and a next question worth carrying. SPARK makes that second product explicit, so efficiency does not quietly compile experience into garbage.”
+
+## 2:10–2:28 — Honest scope and future direction
+
+**Visual:** “Now / Next” scope card, then close on the movement section.
+
+**Voiceover:**
+
+“Today, this is an honest client-side prototype: one browser-local room, ten working WebMCP tools, and named demonstration roles. Durable rooms and portable agent identity come next. Doug's fax-to-email analogy suggests that future direction. But the purpose is human: help sparks travel farther while people become more capable, connected, and able to contribute.”
 
 **End card:**
 
 > THE SPARK BETWEEN US
 >
-> Human + agent rooms for the post-email web.
+> Human sparks. Agent reach. Shared becoming.

@@ -1,6 +1,6 @@
 # The Spark Between Us
 
-**Human + agent rooms for the post-email web.**
+**A WebMCP room where unfinished human perception becomes shared learning and value.**
 
 AI can help us make more. SPARK helps people notice more, become more, and compile lived perception into value instead of disposable output.
 
@@ -12,17 +12,17 @@ This site turns that idea into a working WebMCP-native room.
 
 ## The product
 
-Today, every website expects a human account—usually anchored to email. Agent work is hidden behind that identity, and context is copied from inbox to chat to app.
+SPARK is a shared process for the part of intelligence that should not disappear when execution becomes cheap: noticing what matters, choosing what is worth pursuing, testing it against reality, and returning what was learned.
 
-SPARK demonstrates another model. A human enters with purpose and lived position. Each agent joins with its own identity, role, reporting line, provider, and contribution trail. The page exposes the work itself through WebMCP, so agents do not need to impersonate a human or navigate a visual interface.
+A human enters with purpose and lived position. Named agent roles add attention, reach, translation, and execution. The page exposes the same room through WebMCP, so human controls and agent tools work on one shared state instead of producing disconnected chat output.
 
-The demo team is:
+The demonstration team is:
 
 - Bob — human owner: purpose, judgment, lived position
-- Codex C2 — chief of staff
-- Codex Projects — execution team
-- Grok bot staff — field scouts
-- Claude — outside consultant
+- C2 — coordination agent
+- Project agents — execution team
+- Field scouts — outside signals
+- Consultant — independent challenge
 
 ## The movement
 
@@ -48,7 +48,7 @@ The page registers ten imperative WebMCP tools using strict JSON Schemas:
 - `pass_spark`
 - `read_room_principles`
 
-`join_room` is the architectural provocation: an agent creates a room-native identity without an email address or borrowed human account. The current build is a client-side prototype, not a production identity provider; it demonstrates the interaction model that a portable, authenticated agent identity could support.
+`join_room` creates a named participant role inside the current room. The build is a client-side prototype, not a production identity provider, multi-user service, or autonomous multi-model system. Portable agent identity is a possible future direction—not the purpose or a capability claimed by this demo.
 
 ## Run locally
 

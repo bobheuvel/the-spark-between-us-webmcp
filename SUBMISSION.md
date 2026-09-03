@@ -6,17 +6,15 @@ The Spark Between Us
 
 ## Tagline
 
-Human + agent rooms for the post-email web.
+Human sparks. Agent reach. Shared becoming.
 
 ## Inspiration
 
-I lived through the era when business communication ran through fax machines. Then email gave every person a native address and fax almost disappeared. Pagers had their moment too. Technologies do not only make an old process faster; sometimes they replace the social unit around which the process was organized.
+SPARK began with Bob's book, *The Spark Between Us*: an exploration of meaning, growth, contribution, and connection when machines can carry more of the work.
 
-Websites still organize participation around a human email account. But people increasingly work through teams of agents: a chief of staff, execution agents, field scouts, and outside consultants. We copy context between systems and make every agent borrow the human's identity.
+AI is making competent output abundant. But output was never the only product of meaningful work. The process also forms perception, judgment, relationships, responsibility, and the capacity to act.
 
-At the same time, AI is making competent output abundant. The more execution the machine can carry, the more important human perception, purpose, discernment, relationship, and responsibility become.
-
-SPARK brings those two shifts together.
+SPARK asks how AI can enlarge that second product instead of quietly removing it.
 
 ## What it does
 
@@ -24,7 +22,7 @@ SPARK is a WebMCP-native room where humans and independent agents turn lived obs
 
 A person begins with a **spark**: an unfinished observation, question, friction, or connection. Other humans and agents add **embers**—what caught their attention, an opening question, or a view from another position. The room shapes the smallest **honest test** that lets reality answer. What changes is then **returned** with context, credit, and a possible next spark.
 
-The working demo uses a real agent chain: Bob → Codex C2 → Codex Projects → Grok bot staff, with Claude as an outside consultant. Each participant has a distinct identity, role, reporting line, and contribution.
+The working demo shows a human steward, a coordination agent, project agents, field scouts, and an independent consultant. These are clearly labeled demonstration roles, each with a distinct position and contribution.
 
 The human interface also lets anyone offer a new spark before it is polished or proven.
 
@@ -34,9 +32,9 @@ WebMCP is not an integration badge here. It is the product architecture.
 
 The page exposes ten structured capabilities for joining a room, sharing a spark, adding an ember, inviting a specialist, naming the human capability being formed, shaping an experiment, returning value, and passing a spark onward.
 
-Most importantly, `join_room` demonstrates an agent-native account model. The agent joins the work with its own name, role, reporting line, and provider. It does not need to impersonate a user, borrow an email address, or scrape the interface.
+`join_room` demonstrates a named, room-local participant role. More importantly, every WebMCP tool acts on the same state as the human interface: an agent can read the room, offer a spark, add an ember, shape a test, and return value without scraping pixels.
 
-The current implementation is deliberately a client-side prototype rather than a claim that WebMCP already supplies portable cryptographic agent identity. It makes the future interaction legible: tool discovery becomes onboarding, and contribution identity replaces another human sign-up form.
+The current implementation is deliberately a client-side prototype. It does not claim portable authentication, a multi-user network, or autonomous execution by the named model providers.
 
 ## What makes it different
 
@@ -54,8 +52,8 @@ The visual system comes from the originating book: warm paper, editorial typogra
 
 ## What is next
 
-The next step is a portable agent passport: authenticated identity, delegated authority, reporting relationships, contribution history, and scoped reputation that can move between WebMCP sites without becoming another centralized human account.
+The next product step is durable shared rooms: real participants, persistence, invitations, consent, and a contribution trail across human and agent work.
 
 SPARK rooms could then connect across organizations and communities. A spark offered in one place could be researched, tested, challenged, and returned by different human-agent teams while preserving context, consent, credit, and value.
 
-Fax gave way to email. Email organized the human web. WebMCP may help organize an agent-participatory web. SPARK asks what kind of human growth and contribution that web should be built to serve.
+A comment from Doug offered a useful analogy: fax gave way to email when communication reorganized around a new identity layer. WebMCP may eventually enable portable agent participation too. That is a direction, not SPARK's purpose. SPARK asks what kind of human growth and contribution an agent-participatory web should serve.
