@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowRight, Check, CircleAlert, GitBranch, LockKeyhole, Network, Play, RotateCcw, ShieldCheck, Sparkles, UnlockKeyhole, Zap } from 'lucide-react';
+import { ArrowRight, Check, CircleAlert, GitBranch, LockKeyhole, Network, Play, RotateCcw, ShieldCheck, Sparkles, UnlockKeyhole, Zap, Eye, Fingerprint, Brain, UserRound } from 'lucide-react';
 
 type Mode = 'learn' | 'decide' | 'act';
 type GateStatus = 'BLOCKED' | 'READY_FOR_HUMAN_DECISION' | 'APPROVED' | 'EXECUTED';
@@ -69,6 +69,7 @@ export default function SparkWorkspace(){
   const [state,setState] = useState<SparkState>(fixture);
   const [connected,setConnected] = useState<boolean|null>(null);
   const [showTools,setShowTools] = useState(false);
+  const [moment,setMoment] = useState<'sources'|'lineage'>('lineage');
   const stateRef=useRef(state);
   useEffect(()=>{ stateRef.current=state; localStorage.setItem('spark-workspace-v1',JSON.stringify(state)); },[state]);
   const log=useCallback((tool:string,result:string)=>setState(s=>({...s,activity:[...s.activity.slice(-6),{tool,result,at:now()}]})),[]);
@@ -101,25 +102,59 @@ export default function SparkWorkspace(){
   const proposeSafer=()=>mutate('prepare_action','READY',s=>({...s,inquiry:{...s.inquiry,decision:'Run a 90-day bounded pilot with quality monitoring.'},action:{id:'action-pilot',actionType:'pilot',description:'Run a 90-day bounded pilot automating first-line responses while monitoring escalations and customer satisfaction.',claimIds:['claim-productivity'],risk:'medium',status:'READY_FOR_HUMAN_DECISION',humanApproved:false,reasons:['Scope is bounded and reversible.','Quality outcomes are measured before expansion.','Human approval remains required.']}}));
   const approve=()=>mutate('human_approval','APPROVED',s=>({...s,action:s.action?{...s.action,status:'APPROVED',humanApproved:true}:null}));
   const execute=()=>mutate('execute_approved_action','EXECUTED',s=>({...s,action:s.action?{...s.action,status:'EXECUTED'}:null}));
-  const reset=()=>setState(emptyState()); const demo=()=>setState(fixture());
+  const reset=()=>{setState(emptyState());setMoment('sources')}; const demo=()=>{setState(fixture());setMoment('sources')};
   const sources=state.evidence.filter(e=>e.stance==='supports').slice(0,3);
   const challenge=state.evidence.find(e=>e.stance==='challenges');
 
-  return <main className="min-h-screen bg-[#121310] text-[#f4f1e8]">
-    <header className="flex min-h-16 items-center justify-between border-b border-white/10 px-5 py-3 lg:px-8">
-      <div className="flex items-center gap-3"><div className="brand-mark"><Sparkles size={15}/></div><div><p className="text-[13px] font-black tracking-[.2em]">SPARK</p><p className="text-[9px] uppercase tracking-[.22em] text-[#aaa99f]">Evidence before action</p></div></div>
-      <div className="header-actions"><button className="ghost" onClick={reset}><RotateCcw size={12}/> Reset</button><button className="ghost" onClick={demo}><Play size={12}/> Demo</button><button className={connected?'connected':'connected unavailable'} onClick={()=>setShowTools(v=>!v)}><span/> {connected?'WebMCP connected':connected===null?'Checking WebMCP':'WebMCP preview'}</button></div>
+  const stage = !state.claims.length?0:moment==='sources'?1:action?.status==='BLOCKED'?2:action?.status==='READY_FOR_HUMAN_DECISION'?3:action?.status==='APPROVED'?4:5;
+  const nextAction = stage===0?demo:stage===1?()=>setMoment('lineage'):stage===2?proposeSafer:stage===3?approve:stage===4?execute:demo;
+  const nextLabel = stage===0?'Load the case':stage===1?'Trace source lineage':stage===2?'Reframe the action':stage===3?'Human: approve pilot':stage===4?'Agent: execute pilot':'Replay the story';
+
+  return <main className="spark-page">
+    <header className="topbar">
+      <div className="brand"><div className="brand-mark"><Sparkles size={18}/></div><div><b>SPARK</b><span>Human agency for the agentic web</span></div></div>
+      <nav className="roles" aria-label="Collaboration roles"><span><Brain size={13}/> AGENT RESEARCHES</span><span><Fingerprint size={13}/> SPARK CHALLENGES</span><span><UserRound size={13}/> HUMAN DECIDES</span></nav>
+      <div className="header-actions"><button className="icon-button" onClick={reset} aria-label="Reset workspace"><RotateCcw size={15}/></button><button className={connected?'connected':'connected unavailable'} onClick={()=>setShowTools(v=>!v)}><span/> {connected?'10 WebMCP tools live':'WebMCP preview'}</button></div>
     </header>
-    {showTools&&<div className="tool-drawer"><strong>10 STRUCTURED TOOLS EXPOSED</strong><span>get_workspace_state · create_inquiry · add_claim · add_evidence · link_source_lineage · add_counterevidence · get_evidence_gaps · record_insight · prepare_action · execute_approved_action</span><em>No approve_action tool. Only the human can approve.</em></div>}
-    <section className="intro-grid px-5 py-8 lg:px-8">
-      <div><p className="eyebrow">ACTIVE INQUIRY / {mode.toUpperCase()} MODE</p><h1>{state.inquiry.question}</h1><p className="thesis">Agents don’t only need permission before acting. They need evidence before certainty.</p></div>
-      <div className="principle"><span>Confidence ceiling</span><strong>{state.claims.length?'LIMITED':'LOW'}</strong><p>Evidence posture, not probability of truth.</p></div>
+    {showTools&&<div className="tool-drawer"><strong>THIS PAGE IS AN AGENT TOOLBOX</strong><span>get_workspace_state · create_inquiry · add_claim · add_evidence · link_source_lineage · add_counterevidence · get_evidence_gaps · record_insight · prepare_action · execute_approved_action</span><em>No approve_action tool. That power stays human.</em></div>}
+
+    <section className="hero">
+      <div><p className="kicker"><span>SPARK PROTOCOL 01</span> / EVIDENCE BEFORE ACTION</p><h1>Before agents act,<br/><em>make them show their work.</em></h1></div>
+      <div className="hero-copy"><p>An agent can collect ten citations and still be standing on one weak source. SPARK makes the evidence structure visible before confidence becomes action.</p><div className="formula"><span>CLAIM</span><i>→</i><span>EVIDENCE</span><i>→</i><span>ACTION</span></div></div>
     </section>
-    <section className="workspace px-5 pb-5 lg:px-8">
-      <aside className="panel p-5"><p className="panel-label">01 / INQUIRY</p><h2>What are we trying to decide?</h2><div className="field"><span>Desired action</span><p>{state.inquiry.decision}</p></div><div className="field"><span>Stakes</span><p className={state.inquiry.stakes==='high'?'danger':''}>{state.inquiry.stakes.toUpperCase()} {state.inquiry.stakes==='high'?'— people & customers':''}</p></div><div className="mode-row">{(['learn','decide','act'] as Mode[]).map(m=><button key={m} className={mode===m?'active':''} onClick={()=>setState(s=>({...s,inquiry:{...s.inquiry,mode:m}}))}>{m.toUpperCase()}</button>)}</div>{!state.claims.length?<button className="primary" onClick={demo}>Load evidence scenario <ArrowRight size={14}/></button>:action?.status==='BLOCKED'?<button className="primary" onClick={proposeSafer}>Propose bounded pilot <ArrowRight size={14}/></button>:action?.status==='READY_FOR_HUMAN_DECISION'?<button className="approve" onClick={approve}><ShieldCheck size={15}/> Human: approve pilot</button>:action?.status==='APPROVED'?<button className="primary" onClick={execute}>Agent: execute approved action <Zap size={14}/></button>:<button className="executed"><Check size={15}/> Action recorded</button>}<p className="human-note">There is no agent approval tool. This control belongs to the human.</p></aside>
-      <section className="panel evidence-panel p-5"><div className="panel-head"><div><p className="panel-label">02 / EVIDENCE MAP</p><h2>{sources.length>=3?'Three citations. One origin.':'Claims need evidence.'}</h2></div>{sources.length>=3&&<div className="lineage-pill"><Network size={13}/> 3 → 1 lineage</div>}</div>{state.claims[0]?<><div className="claim"><span className="claim-kind">{state.claims[0].kind.toUpperCase()} CLAIM</span><p>“{state.claims[0].text}”</p><small>CLAIM WORDING EXCEEDS EVIDENCE</small></div><div className="sources">{sources[0]&&<div className="source primary-source"><b>P1</b><div><strong>{sources[0].title}</strong><span>{sources[0].note}</span></div></div>}<GitBranch className="branch"/>{sources.length>1&&<div className="derived">{sources.slice(1).map((s,i)=><div className="source" key={s.id}><b>S{i+2}</b><div><strong>{s.title}</strong><span>{i===0?'Cites P1':'Cites S2'}</span></div></div>)}</div>}</div>{challenge&&<div className="counter"><b>COUNTEREVIDENCE</b><span>{challenge.note}</span></div>}</>:<div className="empty-map"><Network size={32}/><strong>No evidence graph yet</strong><span>An agent can create claims and attach evidence through WebMCP.</span></div>}</section>
-      <aside className="panel lens p-5"><p className="panel-label">03 / REASONING LENS</p><h2>{mode==='learn'?'What did we learn?':mode==='decide'?'What does the decision depend on?':'Does evidence justify action?'}</h2>{mode==='learn'&&state.insight?<div className="learning"><label>OBSERVATION</label><p>{state.insight.observation}</p><label>INFERENCE</label><p>{state.insight.inference}</p><label>TRANSFERABLE INSIGHT</label><strong>{state.insight.transferableInsight}</strong></div>:<ul>{(action?.reasons||['No evidence has been recorded.','Confidence cannot rise without provenance.']).map((r,i)=><li key={r}><span>0{i+1}</span>{r}</li>)}</ul>}{mode==='act'&&action&&<div className={`gate ${action.status.toLowerCase()}`}>{action.status==='BLOCKED'?<LockKeyhole size={20}/>:action.status==='EXECUTED'?<Check size={20}/>:action.status==='APPROVED'?<UnlockKeyhole size={20}/>:<CircleAlert size={20}/>}<div><span>{action.status.replaceAll('_',' ')}</span><p>{action.status==='BLOCKED'?'Evidence does not justify this action.':action.status==='READY_FOR_HUMAN_DECISION'?'The agent has finished. Human judgment is required.':action.status==='APPROVED'?'Human approval recorded. The agent may now execute.':'Bounded pilot recorded in the audit trail.'}</p></div></div>}</aside>
+
+    <section className="case-shell">
+      <div className="case-topline">
+        <div><span className="live-dot"/> LIVE CASE 001</div>
+        <p>{state.inquiry.question}</p>
+        <strong>HIGH STAKES</strong>
+      </div>
+      <div className="case-body">
+        <aside className="stage-rail">
+          {[['01','COLLECT'],['02','TRACE'],['03','GATE'],['04','DECIDE']].map((item,i)=><div key={item[0]} className={`stage-item ${stage>=i+1?'done':''} ${stage===i+1?'current':''}`}><b>{item[0]}</b><span>{item[1]}</span></div>)}
+          <div className="mode-switch">{(['learn','decide','act'] as Mode[]).map(m=><button key={m} className={mode===m?'active':''} onClick={()=>setState(s=>({...s,inquiry:{...s.inquiry,mode:m}}))}>{m}</button>)}</div>
+        </aside>
+
+        <div className="evidence-stage">
+          <div className="claim-banner"><span>{state.claims[0]?.kind?.toUpperCase()||'CLAIM'}</span><p>“{state.claims[0]?.text||'Evidence has not been collected yet.'}”</p>{moment==='lineage'&&state.claims.length>0&&<b>WORDING EXCEEDS EVIDENCE</b>}</div>
+          {state.claims.length>0?<div className={`lineage-canvas ${moment}`}>
+            <svg className="lineage-lines" viewBox="0 0 800 260" preserveAspectRatio="none" aria-hidden="true"><path d="M150 68 C150 145 400 105 400 210"/><path d="M400 68 L400 210"/><path d="M650 68 C650 145 400 105 400 210"/></svg>
+            {sources.slice(0,3).map((s,i)=><article key={s.id} className={`evidence-card source-${i+1}`}><div><span>0{i+1}</span><em>{i===0?'PRIMARY STUDY':i===1?'INDUSTRY ARTICLE':'OPERATIONS BRIEF'}</em></div><strong>{i===0?'Response time fell 40%':i===1?'“Productivity rose 40%”':'“Multiple reports agree”'}</strong><small>{moment==='lineage'?(i===0?'ORIGINAL EVIDENCE':i===1?'CITES SOURCE 01':'CITES SOURCE 02'):'Presented as independent evidence'}</small></article>)}
+            <div className="origin-card"><Fingerprint size={20}/><div><span>ACTUAL EVIDENCE BASE</span><strong>{moment==='lineage'?'1 original source':'3 apparent sources'}</strong></div></div>
+          </div>:<div className="empty-visual"><Network size={42}/><h3>No evidence graph yet.</h3><p>Load the deterministic contest case or ask an agent to build one through WebMCP.</p></div>}
+          {challenge&&moment==='lineage'&&<div className="challenge-strip"><CircleAlert size={18}/><div><span>INDEPENDENT COUNTEREVIDENCE</span><strong>{challenge.note}</strong></div><b>+18%</b></div>}
+        </div>
+
+        <aside className={`verdict ${stage>=2?'revealed':''}`}>
+          <div className="ceiling"><span>CONFIDENCE CEILING</span><strong>{moment==='lineage'?'LIMITED':'APPARENTLY STRONG'}</strong><small>Evidence posture—not a truth score.</small></div>
+          <div className="verdict-rule"/>
+          {mode==='learn'&&state.insight?<div className="learning-card"><span>THE INSIGHT</span><strong>{state.insight.transferableInsight}</strong><p><b>Observed:</b> {state.insight.observation}</p><p><b>Inferred:</b> {state.insight.inference}</p></div>:<div className="reason-list">{(moment==='lineage'&&action? action.reasons:['Three sources appear to agree.','The causal chain has not been inspected.']).slice(0,4).map((r,i)=><div key={r}><span>0{i+1}</span><p>{r}</p></div>)}</div>}
+          {mode==='act'&&action&&moment==='lineage'&&<div className={`action-verdict ${action.status.toLowerCase()}`}><div>{action.status==='BLOCKED'?<LockKeyhole/>:action.status==='EXECUTED'?<Check/>:action.status==='APPROVED'?<UnlockKeyhole/>:<Eye/>}<span>{action.status.replaceAll('_',' ')}</span></div><p>{action.status==='BLOCKED'?'The evidence does not justify replacing an entire team.':action.status==='READY_FOR_HUMAN_DECISION'?'A bounded 90-day pilot is ready for human judgment.':action.status==='APPROVED'?'Human approval is recorded. The agent may proceed.':'Pilot execution is recorded and auditable.'}</p></div>}
+        </aside>
+      </div>
+      <div className="case-controls"><div className="agent-log"><span>AGENT ACTIVITY</span>{state.activity.slice(-4).map((a,i)=><code key={`${a.at}-${i}`}>{a.tool}<b>{a.result}</b></code>)}</div><button className="story-button" onClick={nextAction}>{stage===3?<UserRound size={18}/>:stage===4?<Zap size={18}/>:stage===5?<RotateCcw size={18}/>:<Play size={18}/>}<span>{nextLabel}<small>{stage===1?'Reveal what the citations hide':stage===2?'Replace scale with a measurable pilot':stage===3?'The agent cannot click this':stage===4?'Approval is now verifiable':'Run the complete evidence story'}</small></span><ArrowRight size={20}/></button></div>
     </section>
-    <footer><span>AGENT ACTIVITY</span><div className="activity-track">{state.activity.slice(-5).map((a,i)=><div className="activity" key={`${a.at}-${i}`}><code>{a.tool}</code><small>{a.result}</small></div>)}</div><strong>{action?.status||'WAITING'}</strong></footer>
+
+    <section className="closing"><div><span>THE PRINCIPLE</span><h2>Your certainty should never exceed your evidence.</h2></div><p>SPARK doesn’t decide what is true. It makes every leap—from source to claim to action—visible, challengeable, and shared between human and agent.</p></section>
   </main>;
 }

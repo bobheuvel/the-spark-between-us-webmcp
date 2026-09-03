@@ -1,8 +1,8 @@
-# SPARK — Evidence Before Action
+# SPARK — Human Agency for the Agentic Web
 
-**A shared truth-seeking layer for humans and agents.**
+**Evidence Before Action is SPARK Protocol 01.**
 
-SPARK is an agent-native evidence workspace built for the 2026 OpenAI WebMCP Challenge. It gives a browser agent structured tools to record claims, evidence, source provenance, counterevidence, insights, and proposed actions. A deterministic evidence gate then limits how much confidence can flow from that research into consequential action.
+SPARK is a broader human-agency layer: agents carry leverage, while humans retain judgment, values, consent, and consequential choice. This challenge entry demonstrates one concrete SPARK protocol—**Evidence Before Action**. It gives a browser agent structured tools to record claims, evidence, source provenance, counterevidence, insights, and proposed actions. A deterministic evidence gate then limits how much confidence can flow from that research into consequential action.
 
 > Agents don't only need permission before acting. They need evidence before certainty.
 

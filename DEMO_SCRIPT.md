@@ -1,57 +1,49 @@
-# 2:35 demo script
+# 1:45 demo script
 
-## 0:00–0:15 — The problem
+## 0:00–0:14 — The problem
 
-“AI agents can now research information and act on what they find. But permission is not the only boundary we need. Before an agent acts, we need to know whether its certainty is justified.”
+“Agents can research, recommend, and act. But permission alone is not enough. An authorized agent can still act on duplicated sources, stretched claims, or missing evidence.”
 
-## 0:15–0:28 — The product
+## 0:14–0:30 — SPARK and Protocol 01
 
-“This is SPARK: an evidence layer for humans and agents, built with WebMCP. The agent does the research. SPARK keeps the evidence inspectable. The human owns the consequential decision.”
+“SPARK is a human-agency layer for the agentic web. This is its first working protocol: Evidence Before Action. The agent researches. SPARK challenges the leap. The human decides.”
 
-Open the **WebMCP connected** pill.
+Open the **10 WebMCP tools live** pill.
 
-“The page exposes ten structured tools for claims, evidence, provenance, insight, and action—not a chat wrapper.”
+“The page itself exposes ten structured WebMCP tools. There is deliberately no agent-accessible approval tool.”
 
-## 0:28–1:05 — The lineage reveal
+## 0:30–0:58 — The lineage reveal
 
 Show the evidence map.
 
-“Three sources appear to support a 40 percent productivity claim. SPARK records their lineage. The article cites the pilot, and the brief cites the article. Three citations collapse into one original source.”
+“Three sources appear to support a forty percent productivity claim. Trace the lineage and they collapse into one original study.”
 
 Point to the primary evidence.
 
-“And the pilot measured response time—not productivity. More citations did not mean more independent evidence.”
+“That study measured response time—not productivity—and independent evidence reports an eighteen percent rise in escalations. Citation count was disguising one weak foundation.”
 
-## 1:05–1:30 — Counterevidence and learning
+## 0:58–1:17 — Evidence gate
 
-Switch to **LEARN**.
-
-“SPARK never produces a truth score. It separates observation from inference, keeps uncertainty visible, and records the strongest challenge. Here, an independent audit found escalations rose 18 percent.”
-
-## 1:30–1:55 — Evidence gate
-
-Switch to **ACT**.
-
-“The agent proposes replacing the full support team next quarter. `prepare_action` evaluates the evidence posture.”
+“The agent proposes replacing the whole support operation. SPARK does not declare it false. It limits confidence to the evidence posture.”
 
 Point to **ACTION BLOCKED**.
 
-“Not because SPARK claims the proposal is false. Because this evidence does not justify a high-stakes irreversible action.”
+“The high-stakes action is blocked because the evidence cannot justify it.”
 
-## 1:55–2:20 — Human-agent collaboration
+## 1:17–1:37 — Human-agent collaboration
 
-Click **Propose bounded pilot**.
+Click **Reframe the action**.
 
-“The agent reframes the action: a bounded 90-day pilot that measures quality.”
+“The agent can still help. It reframes the leap as a bounded, measurable pilot.”
 
 Click **Human: approve pilot**.
 
-“There is no `approve_action` WebMCP tool. Only the human can approve.”
+“Only the human can approve. That action is absent from the agent’s toolbox.”
 
 Click **Agent: execute approved action**.
 
-“Now the agent may execute, and the entire sequence remains in the activity trail.”
+“After approval, the agent executes, and the full sequence remains auditable.”
 
-## 2:20–2:35 — Close
+## 1:37–1:45 — Close
 
-“SPARK is not a truth oracle. It is an evidence discipline for the agentic web. Your certainty should never exceed your evidence. Evidence before action.”
+“SPARK is not a truth oracle. It protects human judgment. Your certainty should never exceed your evidence.”

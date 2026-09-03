@@ -2,19 +2,19 @@
 
 ## Project name
 
-SPARK — Evidence Before Action
+SPARK — Human Agency for the Agentic Web
 
 ## Tagline
 
-A shared evidence layer where humans and agents turn research into justified action.
+A human-agency layer where agents do the work and people keep the judgment.
 
 ## Inspiration
 
-AI agents are becoming capable of researching a question and acting on their conclusions. Permission is necessary, but it is not sufficient: an agent can be fully authorized and still act on duplicated sources, a causal leap, or unresolved counterevidence. SPARK explores the missing layer between information and action.
+AI agents are becoming capable of researching a question and acting on their conclusions. Permission is necessary, but it is not sufficient: an agent can be fully authorized and still act on duplicated sources, a causal leap, or unresolved counterevidence. SPARK explores the missing human-agency layer between information and action.
 
 ## What it does
 
-SPARK gives humans and browser agents one shared evidence workspace. The agent records claims, source metadata, provenance links, counterevidence, and insights through structured WebMCP tools. SPARK deterministically exposes evidence gaps and a confidence ceiling—an evidence posture, never a probability of truth. Before a consequential action, the agent calls `prepare_action`. If the evidence does not justify the stakes, the action is blocked with explicit reasons.
+SPARK is broader than data verification. It is a human-agency layer for the agentic web. Its first working protocol, **Evidence Before Action**, gives humans and browser agents one shared evidence workspace. The agent records claims, source metadata, provenance links, counterevidence, and insights through structured WebMCP tools. SPARK deterministically exposes evidence gaps and a confidence ceiling—an evidence posture, never a probability of truth. Before a consequential action, the agent calls `prepare_action`. If the evidence does not justify the stakes, the action is blocked with explicit reasons.
 
 The demo begins with three sources claiming a 40% productivity increase. SPARK makes their dependency visible: all three ultimately cite one pilot, and that pilot measured response time rather than productivity. An independent quality audit also reports higher escalation rates. Three apparent sources collapse into one evidence lineage, and the proposed full replacement of a support team is blocked. The agent reframes the action as a bounded 90-day pilot; only then can a human approve it in the UI.
 
