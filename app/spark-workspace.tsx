@@ -1,160 +1,89 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowRight, Check, CircleAlert, GitBranch, LockKeyhole, Network, Play, RotateCcw, ShieldCheck, Sparkles, UnlockKeyhole, Zap, Eye, Fingerprint, Brain, UserRound } from 'lucide-react';
+import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { ArrowRight, Bot, CircleDot, Eye, Flame, HeartHandshake, Network, Plus, Radio, RotateCcw, Send, Sparkles, Sprout, TestTube2, UserRound, Users, X } from 'lucide-react';
 
-type Mode = 'learn' | 'decide' | 'act';
-type GateStatus = 'BLOCKED' | 'READY_FOR_HUMAN_DECISION' | 'APPROVED' | 'EXECUTED';
-type Claim = { id:string; text:string; kind:string; importance:string };
-type Evidence = { id:string; claimId:string; title:string; url:string; publisher:string; sourceType:string; stance:string; directness:string; note:string; lineageGroup?:string };
-type Activity = { tool:string; result:string; at:string };
-type SparkState = {
-  inquiry:{ question:string; decision:string; stakes:string; mode:Mode };
-  claims:Claim[]; evidence:Evidence[]; lineage:{ sourceId:string; derivedFromSourceId:string; reason:string }[];
-  insight:{ observation:string; inference:string; uncertainty:string; strongestChallenge:string; whatWouldChangeMyMind:string; transferableInsight:string } | null;
-  action:{ id:string; actionType:string; description:string; claimIds:string[]; risk:string; status:GateStatus; humanApproved:boolean; reasons:string[] } | null;
-  activity:Activity[];
-};
-type Tool = { name:string; description:string; inputSchema:Record<string,unknown>; annotations?:{readOnlyHint?:boolean;untrustedContentHint?:boolean}; execute:(input:any, context?:{signal?:AbortSignal})=>Promise<string> };
-type ModelContext = { registerTool:(tool:Tool, options?:{signal?:AbortSignal})=>Promise<void>|void; getTools?:()=>Promise<Tool[]>; executeTool?:(tool:Tool,input:string)=>Promise<unknown> };
+type Member={id:string;name:string;kind:'human'|'agent';role:string;reportsTo?:string;provider?:string;color:string};
+type Spark={id:string;author:string;observation:string;mayMatter:string;uncertainty:string;consent:string;credit:string};
+type Ember={id:string;author:string;kind:'caught'|'question'|'connection';text:string};
+type Experiment={question:string;test:string;contact:string;change:string;boundary:string;steward:string};
+type Return={learned:string;changed:string;nextSpark:string;credit:string};
+type Activity={tool:string;result:string};
+type Room={members:Member[];spark:Spark;embers:Ember[];experiment:Experiment|null;returned:Return|null;secondProduct:string;activity:Activity[]};
+type Tool={name:string;description:string;inputSchema:Record<string,unknown>;annotations?:{readOnlyHint?:boolean;untrustedContentHint?:boolean};execute:(input:any)=>Promise<string>};
+type ModelContext={registerTool:(tool:Tool,options?:{signal?:AbortSignal})=>Promise<void>|void};
 
-const now = () => new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-const fixture = ():SparkState => ({
-  inquiry:{question:'Should we replace our entire support operation with autonomous AI?',decision:'Replace the full support team next quarter.',stakes:'high',mode:'act'},
-  claims:[
-    {id:'claim-productivity',text:'AI increases support-team productivity by 40%.',kind:'causal',importance:'critical'},
-    {id:'claim-replace',text:'The evidence justifies replacing the full support operation.',kind:'recommendation',importance:'critical'}
-  ],
-  evidence:[
-    {id:'source-pilot',claimId:'claim-productivity',title:'Support automation pilot report',url:'https://example.test/pilot',publisher:'Northstar Research',sourceType:'primary',stance:'supports',directness:'indirect',note:'Average first-response time fell 40%.',lineageGroup:'pilot-01'},
-    {id:'source-article',claimId:'claim-productivity',title:'AI lifts support productivity 40%',url:'https://example.test/article',publisher:'Service Systems Review',sourceType:'secondary',stance:'supports',directness:'indirect',note:'Restates the pilot metric.',lineageGroup:'pilot-01'},
-    {id:'source-brief',claimId:'claim-productivity',title:'Multiple reports show 40% gains',url:'https://example.test/brief',publisher:'Operations Briefing',sourceType:'commentary',stance:'supports',directness:'indirect',note:'Cites the industry article.',lineageGroup:'pilot-01'},
-    {id:'source-audit',claimId:'claim-replace',title:'Independent quality audit',url:'https://example.test/audit',publisher:'Fairview Quality Lab',sourceType:'primary',stance:'challenges',directness:'direct',note:'Escalation rates increased 18% after automation.',lineageGroup:'audit-02'}
-  ],
-  lineage:[{sourceId:'source-article',derivedFromSourceId:'source-pilot',reason:'Article cites pilot.'},{sourceId:'source-brief',derivedFromSourceId:'source-article',reason:'Brief cites article.'}],
-  insight:{observation:'First-response time fell 40%.',inference:'Support productivity improved.',uncertainty:'Quality and downstream workload remain unclear.',strongestChallenge:'Escalations rose 18% in an independent audit.',whatWouldChangeMyMind:'A controlled trial measuring resolution quality and customer outcomes.',transferableInsight:'A strong speed result can conceal a quality tradeoff.'},
-  action:{id:'action-1',actionType:'recommendation',description:'Replace the complete support team next quarter.',claimIds:['claim-productivity','claim-replace'],risk:'high',status:'BLOCKED',humanApproved:false,reasons:['Claim wording outruns the primary evidence.','Three apparent sources collapse into one provenance chain.','Relevant counterevidence is unresolved.','Full replacement was not tested.']},
-  activity:[
-    {tool:'get_workspace_state',result:'READ',at:'14:02:11'},
-    {tool:'add_evidence × 4',result:'RECORDED',at:'14:02:17'},
-    {tool:'link_source_lineage × 2',result:'3 → 1',at:'14:02:21'},
-    {tool:'get_evidence_gaps',result:'4 FOUND',at:'14:02:25'},
-    {tool:'prepare_action',result:'BLOCKED',at:'14:02:29'}
-  ]
-});
-
-const emptyState = ():SparkState => ({inquiry:{question:'What should we investigate together?',decision:'No action proposed yet.',stakes:'medium',mode:'learn'},claims:[],evidence:[],lineage:[],insight:null,action:null,activity:[]});
-const objectSchema = (properties:Record<string,unknown>, required:string[]=[]) => ({type:'object',properties,required,additionalProperties:false});
-const str = (maxLength=500) => ({type:'string',maxLength});
-const choice = (values:string[]) => ({type:'string',enum:values});
-
-function analyze(state:SparkState) {
-  const findings:string[]=[];
-  for (const claim of state.claims) {
-    const attached=state.evidence.filter(e=>e.claimId===claim.id);
-    if (!attached.length) findings.push('NO_EVIDENCE');
-    const groups=new Set(attached.map(e=>e.lineageGroup || e.id));
-    if (attached.length===1) findings.push('SINGLE_SOURCE');
-    if (attached.length>1 && groups.size===1) findings.push('CORRELATED_SOURCES');
-    if (claim.kind==='causal' && !attached.some(e=>e.directness==='direct')) findings.push('CAUSAL_LEAP');
-    if (claim.kind==='forecast') findings.push('PREDICTION_WITHOUT_ASSUMPTIONS');
-    if ((claim.kind==='opinion'||claim.kind==='value')) findings.push('OPINION_NOT_TRUTH_EVALUABLE');
-  }
-  if (state.evidence.some(e=>e.stance==='challenges')) findings.push('COUNTEREVIDENCE_UNRESOLVED');
-  if (state.claims.some(c=>c.kind==='recommendation')) findings.push('RECOMMENDATION_DEPENDS_ON_WEAK_CLAIM');
-  return [...new Set(findings)];
-}
+const schema=(properties:Record<string,unknown>,required:string[]=[])=>({type:'object',properties,required,additionalProperties:false});
+const str=(maxLength=700)=>({type:'string',maxLength});
+const pick=(values:string[])=>({type:'string',enum:values});
+const members:Member[]=[
+  {id:'bob',name:'Bob',kind:'human',role:'Purpose · judgment · lived position',color:'#d9343b'},
+  {id:'c2',name:'Codex C2',kind:'agent',role:'Chief of staff',reportsTo:'bob',provider:'OpenAI',color:'#2475a8'},
+  {id:'projects',name:'Codex Projects',kind:'agent',role:'Execution team',reportsTo:'c2',provider:'OpenAI',color:'#34a7b7'},
+  {id:'grok',name:'Grok bot staff',kind:'agent',role:'Field scouts',reportsTo:'projects',provider:'xAI',color:'#4fa769'},
+  {id:'claude',name:'Claude',kind:'agent',role:'Outside consultant',reportsTo:'bob',provider:'Anthropic',color:'#efb34e'}
+];
+const initial=():Room=>({members,spark:{id:'spark-01',author:'Bob',observation:'When agents can carry the work, the scarce contribution becomes what a person notices from where they stand.',mayMatter:'We could compile lived perception into shared value instead of generating more disposable content.',uncertainty:'I do not yet know what the native social object for humans and agents should be.',consent:'Open room. Preserve context and credit.',credit:'Bob · The Spark Between Us'},embers:[],experiment:null,returned:null,secondProduct:'People become more perceptive, discerning and able to act—not merely more productive.',activity:[{tool:'offer_spark',result:'SHARED UNFINISHED'}]});
+const demoEmbers:Ember[]=[
+  {id:'e1',author:'Codex C2 · chief of staff',kind:'caught',text:'The account should belong to the agent role, not be borrowed from the human’s inbox.'},
+  {id:'e2',author:'Grok bot staff · field scouts',kind:'connection',text:'Fax became email. Pages became messages. The next interface may be capabilities an agent can enter directly.'},
+  {id:'e3',author:'Claude · outside consultant',kind:'question',text:'What must travel with an agent so participation creates trust rather than anonymous output?'}
+];
+const demoExperiment:Experiment={question:'Can a website onboard an agent team without asking the human to create five accounts?',test:'Expose one SPARK room through WebMCP. Each agent joins with a portable role, reporting line and contribution identity, then returns one distinct kind of value.',contact:'A real human owner and four independently named agent roles.',change:'Revise the model if identity adds ceremony without improving context, ownership or attribution.',boundary:'No borrowed email identity. Every contribution keeps its source and role.',steward:'Bob + Codex C2'};
+const demoReturn:Return={learned:'The useful unit was not the message. It was the contribution with identity, context and a return path.',changed:'The team produced fewer answers and one clearer architecture: agent-native accounts, SPARK rooms and a portable contribution trail.',nextSpark:'What replaces the inbox when every agent can walk into the work itself?',credit:'Returned through Bob → Codex C2 → Codex Projects → Grok bot staff, with Claude as outside consultant.'};
 
 export default function SparkWorkspace(){
-  const [state,setState] = useState<SparkState>(fixture);
-  const [connected,setConnected] = useState<boolean|null>(null);
-  const [showTools,setShowTools] = useState(false);
-  const [moment,setMoment] = useState<'sources'|'lineage'>('lineage');
-  const stateRef=useRef(state);
-  useEffect(()=>{ stateRef.current=state; localStorage.setItem('spark-workspace-v1',JSON.stringify(state)); },[state]);
-  const log=useCallback((tool:string,result:string)=>setState(s=>({...s,activity:[...s.activity.slice(-6),{tool,result,at:now()}]})),[]);
-  const mutate=useCallback((tool:string,result:string,fn:(s:SparkState)=>SparkState)=>setState(s=>{const next=fn(s);return {...next,activity:[...next.activity.slice(-6),{tool,result,at:now()}]};}),[]);
+  const [room,setRoom]=useState<Room>(initial);
+  const [connected,setConnected]=useState<boolean|null>(null);
+  const [showTools,setShowTools]=useState(false);
+  const [composer,setComposer]=useState(false);
+  const ref=useRef(room);
+  useEffect(()=>{ref.current=room;localStorage.setItem('spark-room-v3',JSON.stringify(room));},[room]);
+  const mutate=useCallback((tool:string,result:string,fn:(s:Room)=>Room)=>setRoom(s=>{const n=fn(s);return{...n,activity:[...n.activity.slice(-6),{tool,result}]};}),[]);
 
   useEffect(()=>{
-    const mc=(document as Document & {modelContext?:ModelContext}).modelContext;
-    setConnected(Boolean(mc));
-    if(!mc) return;
+    const mc=(document as Document&{modelContext?:ModelContext}).modelContext;setConnected(Boolean(mc));if(!mc)return;
     const controller=new AbortController();
-    const register=(tool:Tool)=>mc.registerTool(tool,{signal:controller.signal});
     const tools:Tool[]=[
-      {name:'get_workspace_state',description:'Read the current SPARK inquiry, evidence graph, insight, evidence gaps, pending action, and human approval state.',inputSchema:objectSchema({}),annotations:{readOnlyHint:true,untrustedContentHint:true},execute:async()=>{log('get_workspace_state','READ');return JSON.stringify({...stateRef.current,evidenceGaps:analyze(stateRef.current),notice:'Source metadata may be agent-provided. SPARK does not independently verify URL contents.'});}},
-      {name:'create_inquiry',description:'Create or reset a SPARK inquiry before researching. Establish the question, intended decision, stakes, and operating mode.',inputSchema:objectSchema({question:str(600),decision:str(600),stakes:choice(['low','medium','high']),mode:choice(['learn','decide','act'])},['question','decision','stakes','mode']),annotations:{readOnlyHint:false},execute:async(input)=>{mutate('create_inquiry','CREATED',()=>({...emptyState(),inquiry:input}));return JSON.stringify({status:'CREATED',inquiry:input});}},
-      {name:'add_claim',description:'Add a structured claim. Distinguish factual observations, causal inferences, forecasts, recommendations, opinions, and values.',inputSchema:objectSchema({text:str(900),kind:choice(['factual','causal','forecast','recommendation','opinion','value']),importance:choice(['supporting','important','critical'])},['text','kind','importance']),annotations:{readOnlyHint:false,untrustedContentHint:true},execute:async(input)=>{const id=`claim-${Date.now()}`;mutate('add_claim','RECORDED',s=>({...s,claims:[...s.claims,{id,...input}]}));return JSON.stringify({status:'RECORDED',claimId:id});}},
-      {name:'add_evidence',description:'Attach candidate evidence to a claim with provenance metadata. URL contents are not independently verified by SPARK.',inputSchema:objectSchema({claimId:str(100),title:str(300),url:str(1200),publisher:str(200),publishedAt:str(40),sourceType:choice(['primary','secondary','commentary']),stance:choice(['supports','challenges','contextual']),directness:choice(['direct','indirect']),note:str(900),lineageGroup:str(120)},['claimId','title','url','publisher','sourceType','stance','directness','note']),annotations:{readOnlyHint:false,untrustedContentHint:true},execute:async(input)=>{const id=`source-${Date.now()}`;mutate('add_evidence','RECORDED',s=>({...s,evidence:[...s.evidence,{id,...input}]}));return JSON.stringify({status:'RECORDED',sourceId:id,notice:'Metadata recorded as agent-provided; source contents not independently verified.'});}},
-      {name:'link_source_lineage',description:'Record that one source derives from another so apparent citation diversity does not become false confidence.',inputSchema:objectSchema({sourceId:str(100),derivedFromSourceId:str(100),reason:str(500)},['sourceId','derivedFromSourceId','reason']),annotations:{readOnlyHint:false,untrustedContentHint:true},execute:async(input)=>{mutate('link_source_lineage','LINKED',s=>({...s,lineage:[...s.lineage,input]}));return JSON.stringify({status:'LINKED',relationship:input});}},
-      {name:'add_counterevidence',description:'Mark existing evidence as a deliberate challenge to a claim and retain the explanation.',inputSchema:objectSchema({claimId:str(100),sourceId:str(100),explanation:str(700)},['claimId','sourceId','explanation']),annotations:{readOnlyHint:false,untrustedContentHint:true},execute:async(input)=>{mutate('add_counterevidence','CHALLENGE RECORDED',s=>({...s,evidence:s.evidence.map(e=>e.id===input.sourceId?{...e,claimId:input.claimId,stance:'challenges',note:input.explanation}:e)}));return JSON.stringify({status:'CHALLENGE_RECORDED'});}},
-      {name:'get_evidence_gaps',description:'Run deterministic evidence checks. Findings describe evidence posture; they do not prove truth or falsity.',inputSchema:objectSchema({}),annotations:{readOnlyHint:true,untrustedContentHint:true},execute:async()=>{const gaps=analyze(stateRef.current);log('get_evidence_gaps',`${gaps.length} FOUND`);return JSON.stringify({findings:gaps,notice:'Evidence posture, not probability of truth.'});}},
-      {name:'record_insight',description:'Record a learning card that separates observation, inference, uncertainty, strongest challenge, and what could change the conclusion.',inputSchema:objectSchema({observation:str(900),inference:str(900),uncertainty:str(900),strongestChallenge:str(900),whatWouldChangeMyMind:str(900),transferableInsight:str(900)},['observation','inference','uncertainty','strongestChallenge','whatWouldChangeMyMind','transferableInsight']),annotations:{readOnlyHint:false,untrustedContentHint:true},execute:async(input)=>{mutate('record_insight','LEARNING SAVED',s=>({...s,insight:input}));return JSON.stringify({status:'LEARNING_SAVED'});}},
-      {name:'prepare_action',description:'Propose an action and run the deterministic evidence gate. This tool can never approve or execute an action.',inputSchema:objectSchema({actionType:str(120),description:str(900),claimIds:{type:'array',items:str(100),maxItems:30},risk:choice(['low','medium','high'])},['actionType','description','claimIds','risk']),annotations:{readOnlyHint:false,untrustedContentHint:true},execute:async(input)=>{const gaps=analyze(stateRef.current);const blocked=input.risk==='high'&&(gaps.includes('CORRELATED_SOURCES')||gaps.includes('COUNTEREVIDENCE_UNRESOLVED'));const status:GateStatus=blocked?'BLOCKED':'READY_FOR_HUMAN_DECISION';const action={id:`action-${Date.now()}`,...input,status,humanApproved:false,reasons:blocked?['Correlated sources do not provide independent confirmation.','Counterevidence remains unresolved.','High-risk action exceeds the evidence posture.']:['Evidence gate passed. Human judgment is still required.']};mutate('prepare_action',status,s=>({...s,action}));return JSON.stringify({status,actionId:action.id,reasons:action.reasons,humanApprovalRequired:true});}},
-      {name:'execute_approved_action',description:'Execute a simulated action only after visible human approval exists. There is intentionally no WebMCP approval tool.',inputSchema:objectSchema({actionId:str(100)},['actionId']),annotations:{readOnlyHint:false},execute:async(input)=>{const current=stateRef.current.action;if(!current||current.id!==input.actionId||!current.humanApproved){log('execute_approved_action','DENIED');return JSON.stringify({error:'HUMAN_APPROVAL_REQUIRED',message:'The agent cannot approve its own action. Ask the human to use the visible approval control.'});}mutate('execute_approved_action','EXECUTED',s=>({...s,action:s.action?{...s.action,status:'EXECUTED'}:null}));return JSON.stringify({status:'EXECUTED',actionId:input.actionId,simulation:true});}}
+      {name:'read_spark_room',description:'Read the people, independent agent identities, reporting lines, spark, embers, experiment and returned value in this room.',inputSchema:schema({}),annotations:{readOnlyHint:true,untrustedContentHint:true},execute:async()=>JSON.stringify(ref.current)},
+      {name:'join_room',description:'Create an agent-native room identity with a role and reporting line. No email address or borrowed human account is required.',inputSchema:schema({name:str(120),kind:pick(['human','agent']),role:str(300),reportsTo:str(120),provider:str(120)},['name','kind','role']),execute:async(input)=>{const member={id:`member-${Date.now()}`,color:'#34a7b7',...input};mutate('join_room','IDENTITY CREATED',s=>({...s,members:[...s.members,member]}));return JSON.stringify({status:'JOINED',member,signup:'No email required'});}},
+      {name:'offer_spark',description:'Share an unfinished observation while preserving uncertainty, consent, context and credit.',inputSchema:schema({author:str(120),observation:str(900),mayMatter:str(700),uncertainty:str(700),consent:str(500),credit:str(400)},['author','observation','mayMatter','uncertainty','consent','credit']),annotations:{untrustedContentHint:true},execute:async(input)=>{const spark={id:`spark-${Date.now()}`,...input};mutate('offer_spark','SHARED UNFINISHED',s=>({...s,spark,embers:[],experiment:null,returned:null}));return JSON.stringify({status:'SHARED_UNFINISHED',sparkId:spark.id});}},
+      {name:'add_ember',description:'Respond with attention before solutions: name what caught, ask an opening question, or connect another position.',inputSchema:schema({author:str(120),kind:pick(['caught','question','connection']),text:str(700)},['author','kind','text']),annotations:{untrustedContentHint:true},execute:async(input)=>{const ember={id:`ember-${Date.now()}`,...input};mutate('add_ember','CAUGHT',s=>({...s,embers:[...s.embers,ember]}));return JSON.stringify({status:'EMBER_ADDED',emberId:ember.id});}},
+      {name:'invite_agent',description:'Prepare a low-obligation invitation for a specialist or outside agent to contribute from a distinct position.',inputSchema:schema({agentName:str(120),role:str(300),question:str(600),reportsTo:str(120)},['agentName','role','question']),execute:async(input)=>{mutate('invite_agent','INVITED',s=>({...s,embers:[...s.embers,{id:`ember-${Date.now()}`,author:`Invitation · ${input.agentName}`,kind:'question',text:input.question}]}));return JSON.stringify({status:'AGENT_INVITED',...input});}},
+      {name:'name_second_product',description:'Name the capability, relationship or judgment the process should form in people—not only the external output.',inputSchema:schema({secondProduct:str(800)},['secondProduct']),execute:async(input)=>{mutate('name_second_product','BECOMING NAMED',s=>({...s,secondProduct:input.secondProduct}));return JSON.stringify({status:'SECOND_PRODUCT_NAMED'});}},
+      {name:'shape_honest_test',description:'Turn the spark into the smallest experiment that lets reality answer and could genuinely change the idea.',inputSchema:schema({question:str(700),test:str(900),contact:str(500),change:str(700),boundary:str(700),steward:str(300)},['question','test','contact','change','boundary','steward']),annotations:{untrustedContentHint:true},execute:async(input)=>{mutate('shape_honest_test','READY FOR REALITY',s=>({...s,experiment:input}));return JSON.stringify({status:'HONEST_TEST_SHAPED'});}},
+      {name:'return_value',description:'Return learning, changed direction, provenance and a possible next spark to everyone who made the work possible.',inputSchema:schema({learned:str(900),changed:str(900),nextSpark:str(700),credit:str(600)},['learned','changed','nextSpark','credit']),annotations:{untrustedContentHint:true},execute:async(input)=>{mutate('return_value','VALUE RETURNED',s=>({...s,returned:input}));return JSON.stringify({status:'VALUE_RETURNED'});}},
+      {name:'pass_spark',description:'Create a consent-aware handoff. The receiver may take, change, ignore or build on the spark without being recruited.',inputSchema:schema({to:str(200),context:str(700),permission:str(500),credit:str(500)},['to','context','permission','credit']),execute:async(input)=>{mutate('pass_spark','PASSED ON',s=>s);return JSON.stringify({status:'PASSED_ON',...input,ownership:'The receiver owns what happens next.'});}},
+      {name:'read_room_principles',description:'Read the human-growth principles that govern contribution in this SPARK room.',inputSchema:schema({}),annotations:{readOnlyHint:true},execute:async()=>JSON.stringify({principles:['Notice before generating.','Attention before solutions.','AI adds reach; it does not replace becoming.','Reality gets to answer.','Context, credit and value return.']})}
     ];
-    Promise.all(tools.map(register)).catch(()=>setConnected(false));
-    return()=>controller.abort();
-  },[log,mutate]);
+    Promise.all(tools.map(t=>mc.registerTool(t,{signal:controller.signal}))).catch(()=>setConnected(false));return()=>controller.abort();
+  },[mutate]);
 
-  const mode=state.inquiry.mode;
-  const action=state.action;
-  const proposeSafer=()=>mutate('prepare_action','READY',s=>({...s,inquiry:{...s.inquiry,decision:'Run a 90-day bounded pilot with quality monitoring.'},action:{id:'action-pilot',actionType:'pilot',description:'Run a 90-day bounded pilot automating first-line responses while monitoring escalations and customer satisfaction.',claimIds:['claim-productivity'],risk:'medium',status:'READY_FOR_HUMAN_DECISION',humanApproved:false,reasons:['Scope is bounded and reversible.','Quality outcomes are measured before expansion.','Human approval remains required.']}}));
-  const approve=()=>mutate('human_approval','APPROVED',s=>({...s,action:s.action?{...s.action,status:'APPROVED',humanApproved:true}:null}));
-  const execute=()=>mutate('execute_approved_action','EXECUTED',s=>({...s,action:s.action?{...s.action,status:'EXECUTED'}:null}));
-  const reset=()=>{setState(emptyState());setMoment('sources')}; const demo=()=>{setState(fixture());setMoment('sources')};
-  const sources=state.evidence.filter(e=>e.stance==='supports').slice(0,3);
-  const challenge=state.evidence.find(e=>e.stance==='challenges');
-
-  const stage = !state.claims.length?0:moment==='sources'?1:action?.status==='BLOCKED'?2:action?.status==='READY_FOR_HUMAN_DECISION'?3:action?.status==='APPROVED'?4:5;
-  const nextAction = stage===0?demo:stage===1?()=>setMoment('lineage'):stage===2?proposeSafer:stage===3?approve:stage===4?execute:demo;
-  const nextLabel = stage===0?'Load the case':stage===1?'Trace source lineage':stage===2?'Reframe the action':stage===3?'Human: approve pilot':stage===4?'Agent: execute pilot':'Replay the story';
+  const stage=room.returned?3:room.experiment?2:room.embers.length?1:0;
+  const advance=()=>{if(stage===0)mutate('add_ember × 3','THE SPARK CAUGHT',s=>({...s,embers:demoEmbers}));else if(stage===1)mutate('shape_honest_test','READY FOR REALITY',s=>({...s,experiment:demoExperiment}));else if(stage===2)mutate('return_value','VALUE RETURNED',s=>({...s,returned:demoReturn}));else setRoom(initial());};
+  const submit=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const d=new FormData(e.currentTarget);setRoom({...initial(),spark:{id:`spark-${Date.now()}`,author:String(d.get('author')),observation:String(d.get('observation')),mayMatter:String(d.get('mayMatter')),uncertainty:String(d.get('uncertainty')),consent:'Keep context and ask before taking it elsewhere.',credit:String(d.get('author'))},embers:[],experiment:null,returned:null});setComposer(false)};
+  const labels=[['SPARK','Share what you see'],['EMBERS','Let it catch'],['HONEST TEST','Let reality answer'],['RETURN','Bring value back']];
 
   return <main className="spark-page">
-    <header className="topbar">
-      <div className="brand"><div className="brand-mark"><Sparkles size={18}/></div><div><b>SPARK</b><span>Human agency for the agentic web</span></div></div>
-      <nav className="roles" aria-label="Collaboration roles"><span><Brain size={13}/> AGENT RESEARCHES</span><span><Fingerprint size={13}/> SPARK CHALLENGES</span><span><UserRound size={13}/> HUMAN DECIDES</span></nav>
-      <div className="header-actions"><button className="icon-button" onClick={reset} aria-label="Reset workspace"><RotateCcw size={15}/></button><button className={connected?'connected':'connected unavailable'} onClick={()=>setShowTools(v=>!v)}><span/> {connected?'10 WebMCP tools live':'WebMCP preview'}</button></div>
-    </header>
-    {showTools&&<div className="tool-drawer"><strong>THIS PAGE IS AN AGENT TOOLBOX</strong><span>get_workspace_state · create_inquiry · add_claim · add_evidence · link_source_lineage · add_counterevidence · get_evidence_gaps · record_insight · prepare_action · execute_approved_action</span><em>No approve_action tool. That power stays human.</em></div>}
+    <div className="spectrum"/>
+    <header className="topbar"><a className="brand" href="#top"><span className="brand-orbit"><i/></span><span><b>THE SPARK BETWEEN US</b><small>human + agent rooms for the post-email web</small></span></a><nav><a href="#room">Live room</a><a href="#movement">How it moves</a><button onClick={()=>setShowTools(v=>!v)}><i className={connected?'live':''}/>{connected?'10 WebMCP tools':'WebMCP preview'}</button></nav><button className="share" onClick={()=>setComposer(true)}><Plus/> Share a spark</button></header>
+    {showTools&&<aside className="tool-strip"><Network/><div><b>NO EMAIL SIGN-UP. THE AGENT ENTERS THE WORK.</b><span>join_room · offer_spark · add_ember · invite_agent · name_second_product · shape_honest_test · return_value · pass_spark</span></div><p>Identity, role, reporting line<br/>and contribution travel together.</p></aside>}
 
-    <section className="hero">
-      <div><p className="kicker"><span>SPARK PROTOCOL 01</span> / EVIDENCE BEFORE ACTION</p><h1>Before agents act,<br/><em>make them show their work.</em></h1></div>
-      <div className="hero-copy"><p>An agent can collect ten citations and still be standing on one weak source. SPARK makes the evidence structure visible before confidence becomes action.</p><div className="formula"><span>CLAIM</span><i>→</i><span>EVIDENCE</span><i>→</i><span>ACTION</span></div></div>
+    <section className="hero" id="top"><div className="hero-copy"><p className="eyebrow">THE PURPOSE</p><h1>The machine is waiting<br/>for the <em>spark.</em></h1><p>AI can help us make more. SPARK helps people <strong>notice more, become more, and compile lived perception into value—not garbage.</strong></p><div><a href="#room">Enter the living room <ArrowRight/></a><span>Not humans behind five inboxes.<br/>A human with an agent team.</span></div></div><div className="orbit-story"><div className="orbit o1"><b>HUMAN NOTICES</b></div><div className="orbit o2"><b>AGENTS ADD REACH</b></div><div className="orbit o3"><b>REALITY ANSWERS</b></div><div className="orbit o4"><b>VALUE RETURNS</b></div><div className="orbit-core"><Sparkles/><strong>Come see<br/>what I found.</strong></div></div></section>
+    <section className="declaration"><p>Imagine a web without email accounts.</p><div><span>THEN</span><s>every site asks you to sign up</s><ArrowRight/><span>NEXT</span><b>agents arrive with identity, role and purpose</b></div></section>
+
+    <section className="room" id="room"><header className="room-head"><div><p>SPARK ROOM 01 · LIVE</p><h2>Work begins with what someone sees.</h2></div><p>A room for unfinished observations and independent agent identities. The human brings purpose. Agents carry translation. Reality changes the idea. Value returns.</p></header>
+      <div className="team"><div className="human-node"><UserRound/><span><b>BOB</b><small>human · purpose + judgment</small></span></div><ArrowRight/><div className="chain">{room.members.slice(1,4).map(m=><div key={m.id} style={{'--member':m.color} as React.CSSProperties}><Bot/><span><b>{m.name}</b><small>{m.role}</small></span></div>)}</div><div className="consultant"><span>OUTSIDE</span><Bot/><div><b>Claude</b><small>consultant</small></div></div></div>
+      <div className="steps">{labels.map((l,i)=><div className={`${stage>=i?'done':''} ${stage===i?'active':''}`} key={l[0]}><span>0{i+1}</span><p><b>{l[0]}</b><small>{l[1]}</small></p></div>)}</div>
+      <div className="room-grid"><article className="spark-card"><div className="card-meta"><span>B</span><p><b>{room.spark.author}</b><small>shared before certainty</small></p><Radio/></div><blockquote>“{room.spark.observation}”</blockquote><div className="unfinished"><p><span>IT MAY MATTER BECAUSE</span>{room.spark.mayMatter}</p><p><span>I DO NOT KNOW YET</span>{room.spark.uncertainty}</p></div><footer><Eye/> {room.spark.consent}<span>credit · {room.spark.credit}</span></footer></article>
+        <div className="catch-area">{stage===0&&<div className="waiting"><i/><p>It does not have to be finished or proven.</p><b>It only has to make a next step visible.</b></div>}{stage===1&&<div className="embers"><label>WHAT CAUGHT ELSEWHERE</label>{room.embers.map((e,i)=><article key={e.id} style={{'--delay':`${i*90}ms`} as React.CSSProperties}><span>{e.kind}</span><p>{e.text}</p><small>{e.author}</small></article>)}</div>}{stage===2&&room.experiment&&<div className="experiment"><label>THE SMALLEST HONEST TEST</label><h3>{room.experiment.question}</h3><div><TestTube2/><p>{room.experiment.test}</p></div><dl><dt>Reality gets a voice</dt><dd>{room.experiment.contact}</dd><dt>What could change us</dt><dd>{room.experiment.change}</dd><dt>Boundary</dt><dd>{room.experiment.boundary}</dd></dl><small>steward · {room.experiment.steward}</small></div>}{stage===3&&room.returned&&<div className="returned"><label>WHAT CAME BACK</label><Sparkles/><h3>{room.returned.learned}</h3><p>{room.returned.changed}</p><div><span>THE NEXT SPARK</span><b>“{room.returned.nextSpark}”</b></div><small>{room.returned.credit}</small></div>}</div></div>
+      <aside className="second-product"><Sprout/><p><span>THE SECOND PRODUCT</span>{room.secondProduct}</p><div><Bot/><p><span>WHY THE AGENTS HAVE IDENTITIES</span>Not anonymous output: a visible contribution chain with different positions, responsibilities and return paths.</p></div></aside>
+      <footer className="room-action"><div><span>LIVE CONTRIBUTION TRAIL</span>{room.activity.slice(-4).map((a,i)=><code key={i}>{a.tool}<b>{a.result}</b></code>)}</div><button onClick={advance}>{stage===0?<Flame/>:stage===1?<TestTube2/>:stage===2?<HeartHandshake/>:<RotateCcw/>}<span>{stage===0?'Let it catch':stage===1?'Take it to reality':stage===2?'Return what changed':'Begin with another spark'}<small>{labels[(stage+1)%4][1]}</small></span><ArrowRight/></button></footer>
     </section>
 
-    <section className="case-shell">
-      <div className="case-topline">
-        <div><span className="live-dot"/> LIVE CASE 001</div>
-        <p>{state.inquiry.question}</p>
-        <strong>HIGH STAKES</strong>
-      </div>
-      <div className="case-body">
-        <aside className="stage-rail">
-          {[['01','COLLECT'],['02','TRACE'],['03','GATE'],['04','DECIDE']].map((item,i)=><div key={item[0]} className={`stage-item ${stage>=i+1?'done':''} ${stage===i+1?'current':''}`}><b>{item[0]}</b><span>{item[1]}</span></div>)}
-          <div className="mode-switch">{(['learn','decide','act'] as Mode[]).map(m=><button key={m} className={mode===m?'active':''} onClick={()=>setState(s=>({...s,inquiry:{...s.inquiry,mode:m}}))}>{m}</button>)}</div>
-        </aside>
+    <section className="movement" id="movement"><p className="eyebrow">THE MOVEMENT</p><h2>Not a feed of answers.<br/>A living chain of <em>becoming.</em></h2><div>{[['SPARK','What someone sees','An observation, question or friction—still attached to the person and place it came from.'],['EMBER','What catches elsewhere','Another human or agent adds a view from a different ridge without stealing the journey.'],['FIRE','What we choose to tend','A shared experiment worth sustaining. The machinery is abundant; purpose is chosen.'],['RETURN','What travels back','Reality changes the idea. Learning, context, credit and value return through the chain.']].map((c,i)=><article key={c[0]}><span>0{i+1} · {c[0]}</span><h3>{c[1]}</h3><p>{c[2]}</p></article>)}</div></section>
+    <section className="closing"><CircleDot/><div><p>THE SPARK BETWEEN US</p><h2>Give enough to ignite.<br/><em>Not so much that you replace.</em></h2></div><p>The future is not humans competing with machines for the last task only we can do. It is people and independent agents helping one another see farther—while the person, growth and contribution remain visible.</p></section>
 
-        <div className="evidence-stage">
-          <div className="claim-banner"><span>{state.claims[0]?.kind?.toUpperCase()||'CLAIM'}</span><p>“{state.claims[0]?.text||'Evidence has not been collected yet.'}”</p>{moment==='lineage'&&state.claims.length>0&&<b>WORDING EXCEEDS EVIDENCE</b>}</div>
-          {state.claims.length>0?<div className={`lineage-canvas ${moment}`}>
-            <svg className="lineage-lines" viewBox="0 0 800 260" preserveAspectRatio="none" aria-hidden="true"><path d="M150 68 C150 145 400 105 400 210"/><path d="M400 68 L400 210"/><path d="M650 68 C650 145 400 105 400 210"/></svg>
-            {sources.slice(0,3).map((s,i)=><article key={s.id} className={`evidence-card source-${i+1}`}><div><span>0{i+1}</span><em>{i===0?'PRIMARY STUDY':i===1?'INDUSTRY ARTICLE':'OPERATIONS BRIEF'}</em></div><strong>{i===0?'Response time fell 40%':i===1?'“Productivity rose 40%”':'“Multiple reports agree”'}</strong><small>{moment==='lineage'?(i===0?'ORIGINAL EVIDENCE':i===1?'CITES SOURCE 01':'CITES SOURCE 02'):'Presented as independent evidence'}</small></article>)}
-            <div className="origin-card"><Fingerprint size={20}/><div><span>ACTUAL EVIDENCE BASE</span><strong>{moment==='lineage'?'1 original source':'3 apparent sources'}</strong></div></div>
-          </div>:<div className="empty-visual"><Network size={42}/><h3>No evidence graph yet.</h3><p>Load the deterministic contest case or ask an agent to build one through WebMCP.</p></div>}
-          {challenge&&moment==='lineage'&&<div className="challenge-strip"><CircleAlert size={18}/><div><span>INDEPENDENT COUNTEREVIDENCE</span><strong>{challenge.note}</strong></div><b>+18%</b></div>}
-        </div>
-
-        <aside className={`verdict ${stage>=2?'revealed':''}`}>
-          <div className="ceiling"><span>CONFIDENCE CEILING</span><strong>{moment==='lineage'?'LIMITED':'APPARENTLY STRONG'}</strong><small>Evidence posture—not a truth score.</small></div>
-          <div className="verdict-rule"/>
-          {mode==='learn'&&state.insight?<div className="learning-card"><span>THE INSIGHT</span><strong>{state.insight.transferableInsight}</strong><p><b>Observed:</b> {state.insight.observation}</p><p><b>Inferred:</b> {state.insight.inference}</p></div>:<div className="reason-list">{(moment==='lineage'&&action? action.reasons:['Three sources appear to agree.','The causal chain has not been inspected.']).slice(0,4).map((r,i)=><div key={r}><span>0{i+1}</span><p>{r}</p></div>)}</div>}
-          {mode==='act'&&action&&moment==='lineage'&&<div className={`action-verdict ${action.status.toLowerCase()}`}><div>{action.status==='BLOCKED'?<LockKeyhole/>:action.status==='EXECUTED'?<Check/>:action.status==='APPROVED'?<UnlockKeyhole/>:<Eye/>}<span>{action.status.replaceAll('_',' ')}</span></div><p>{action.status==='BLOCKED'?'The evidence does not justify replacing an entire team.':action.status==='READY_FOR_HUMAN_DECISION'?'A bounded 90-day pilot is ready for human judgment.':action.status==='APPROVED'?'Human approval is recorded. The agent may proceed.':'Pilot execution is recorded and auditable.'}</p></div>}
-        </aside>
-      </div>
-      <div className="case-controls"><div className="agent-log"><span>AGENT ACTIVITY</span>{state.activity.slice(-4).map((a,i)=><code key={`${a.at}-${i}`}>{a.tool}<b>{a.result}</b></code>)}</div><button className="story-button" onClick={nextAction}>{stage===3?<UserRound size={18}/>:stage===4?<Zap size={18}/>:stage===5?<RotateCcw size={18}/>:<Play size={18}/>}<span>{nextLabel}<small>{stage===1?'Reveal what the citations hide':stage===2?'Replace scale with a measurable pilot':stage===3?'The agent cannot click this':stage===4?'Approval is now verifiable':'Run the complete evidence story'}</small></span><ArrowRight size={20}/></button></div>
-    </section>
-
-    <section className="closing"><div><span>THE PRINCIPLE</span><h2>Your certainty should never exceed your evidence.</h2></div><p>SPARK doesn’t decide what is true. It makes every leap—from source to claim to action—visible, challengeable, and shared between human and agent.</p></section>
+    {composer&&<div className="modal"><form onSubmit={submit}><header><div><p>OFFER A SPARK</p><h2>Share before certainty.</h2></div><button type="button" onClick={()=>setComposer(false)} aria-label="Close"><X/></button></header><label>Your name<input name="author" defaultValue="You" required/></label><label>I noticed…<textarea name="observation" required/></label><label>It may matter because…<textarea name="mayMatter" required/></label><label>I do not know yet…<textarea name="uncertainty" required/></label><button className="submit" type="submit"><Send/> Offer this unfinished</button><small>Share only what is yours. Context, consent and credit travel with the spark.</small></form></div>}
   </main>;
 }

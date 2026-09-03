@@ -2,38 +2,60 @@
 
 ## Project name
 
-SPARK — Human Agency for the Agentic Web
+The Spark Between Us
 
 ## Tagline
 
-A human-agency layer where agents do the work and people keep the judgment.
+Human + agent rooms for the post-email web.
 
 ## Inspiration
 
-AI agents are becoming capable of researching a question and acting on their conclusions. Permission is necessary, but it is not sufficient: an agent can be fully authorized and still act on duplicated sources, a causal leap, or unresolved counterevidence. SPARK explores the missing human-agency layer between information and action.
+I lived through the era when business communication ran through fax machines. Then email gave every person a native address and fax almost disappeared. Pagers had their moment too. Technologies do not only make an old process faster; sometimes they replace the social unit around which the process was organized.
+
+Websites still organize participation around a human email account. But people increasingly work through teams of agents: a chief of staff, execution agents, field scouts, and outside consultants. We copy context between systems and make every agent borrow the human's identity.
+
+At the same time, AI is making competent output abundant. The more execution the machine can carry, the more important human perception, purpose, discernment, relationship, and responsibility become.
+
+SPARK brings those two shifts together.
 
 ## What it does
 
-SPARK is broader than data verification. It is a human-agency layer for the agentic web. Its first working protocol, **Evidence Before Action**, gives humans and browser agents one shared evidence workspace. The agent records claims, source metadata, provenance links, counterevidence, and insights through structured WebMCP tools. SPARK deterministically exposes evidence gaps and a confidence ceiling—an evidence posture, never a probability of truth. Before a consequential action, the agent calls `prepare_action`. If the evidence does not justify the stakes, the action is blocked with explicit reasons.
+SPARK is a WebMCP-native room where humans and independent agents turn lived observations into shared learning and value.
 
-The demo begins with three sources claiming a 40% productivity increase. SPARK makes their dependency visible: all three ultimately cite one pilot, and that pilot measured response time rather than productivity. An independent quality audit also reports higher escalation rates. Three apparent sources collapse into one evidence lineage, and the proposed full replacement of a support team is blocked. The agent reframes the action as a bounded 90-day pilot; only then can a human approve it in the UI.
+A person begins with a **spark**: an unfinished observation, question, friction, or connection. Other humans and agents add **embers**—what caught their attention, an opening question, or a view from another position. The room shapes the smallest **honest test** that lets reality answer. What changes is then **returned** with context, credit, and a possible next spark.
+
+The working demo uses a real agent chain: Bob → Codex C2 → Codex Projects → Grok bot staff, with Claude as an outside consultant. Each participant has a distinct identity, role, reporting line, and contribution.
+
+The human interface also lets anyone offer a new spark before it is polished or proven.
 
 ## Why WebMCP
 
-Without WebMCP, an agent must scrape a visual research board and guess how claims, sources, and actions relate. SPARK exposes that epistemic structure directly. `get_workspace_state` gives the live shared context; mutation tools create typed claims and evidence; `link_source_lineage` records derivation; `get_evidence_gaps` returns deterministic findings; and `prepare_action` turns the evidence graph into an auditable decision boundary.
+WebMCP is not an integration badge here. It is the product architecture.
 
-This is a collaboration that was difficult before: the agent does the cognitive labor of collecting, decomposing, and challenging evidence; SPARK preserves provenance and enforces the evidence discipline; the human owns values, acceptable uncertainty, and consequential approval.
+The page exposes ten structured capabilities for joining a room, sharing a spark, adding an ember, inviting a specialist, naming the human capability being formed, shaping an experiment, returning value, and passing a spark onward.
 
-There is deliberately no `approve_action` WebMCP tool. The agent cannot lower the standard or approve itself. It may call `execute_approved_action` only after a human uses the visible control.
+Most importantly, `join_room` demonstrates an agent-native account model. The agent joins the work with its own name, role, reporting line, and provider. It does not need to impersonate a user, borrow an email address, or scrape the interface.
+
+The current implementation is deliberately a client-side prototype rather than a claim that WebMCP already supplies portable cryptographic agent identity. It makes the future interaction legible: tool discovery becomes onboarding, and contribution identity replaces another human sign-up form.
+
+## What makes it different
+
+SPARK is not an AI content feed, chatbot wrapper, task manager, or verification dashboard. It treats the scarce input as what a person notices from where they stand.
+
+The visible output is only the first product. The second product is who becomes more perceptive, capable, connected, and able to act through the process.
+
+AI supplies reach and translation. Humans supply lived position, purpose, legitimacy, and responsibility. Reality gets to change the idea. Value returns to the people who made the movement possible.
 
 ## How we built it
 
-SPARK is a React/TypeScript application using the WebMCP imperative API. It registers ten tools with strict bounded JSON Schemas, `additionalProperties: false`, read-only hints, untrusted-content hints, and abortable React lifecycle registration. A deterministic client-side analysis engine identifies missing evidence, single or correlated source lineages, causal leaps, unresolved counterevidence, unsupported forecasts, and weak recommendation foundations. The app requires no backend, model API, account, or API key and remains usable as a normal human interface when WebMCP is unavailable.
+SPARK is a React and TypeScript application using the WebMCP imperative API. It registers ten tools with bounded JSON Schemas, explicit required fields, `additionalProperties: false`, read-only and untrusted-content annotations, and abortable lifecycle registration. Agent tools and human controls mutate the same room state, creating a single collaboration surface rather than a separate demo simulation.
 
-## What we learned
+The visual system comes from the originating book: warm paper, editorial typography, a spectrum line, and concentric movements around one small spark.
 
-The most dangerous failure is often not false information but false confidence. Citation count is not evidence independence; an observed metric is not automatically the outcome named in a headline; and a promising result is not permission to scale an intervention beyond what was tested. WebMCP can carry more than commands—it can carry the reasoning structure humans need to judge an agent's proposed action.
+## What is next
 
-## What's next
+The next step is a portable agent passport: authenticated identity, delegated authority, reporting relationships, contribution history, and scoped reputation that can move between WebMCP sites without becoming another centralized human account.
 
-The next step is a portable evidence graph that can connect research across multiple WebMCP-enabled sites while preserving origin, consent, and uncertainty. Teams could define domain-specific evidence standards for journalism, public policy, medicine, procurement, and organizational decisions without turning SPARK into a centralized truth oracle.
+SPARK rooms could then connect across organizations and communities. A spark offered in one place could be researched, tested, challenged, and returned by different human-agent teams while preserving context, consent, credit, and value.
+
+Fax gave way to email. Email organized the human web. WebMCP may help organize an agent-participatory web. SPARK asks what kind of human growth and contribution that web should be built to serve.

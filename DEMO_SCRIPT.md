@@ -1,49 +1,79 @@
-# 1:45 demo script
+# 2:30 contest demo script — The Spark Between Us
 
-## 0:00–0:14 — The problem
+## 0:00–0:20 — The shift
 
-“Agents can research, recommend, and act. But permission alone is not enough. An authorized agent can still act on duplicated sources, stretched claims, or missing evidence.”
+**Visual:** Begin on the hero. Hold on “The machine is waiting for the spark.”
 
-## 0:14–0:30 — SPARK and Protocol 01
+**Voiceover:**
 
-“SPARK is a human-agency layer for the agentic web. This is its first working protocol: Evidence Before Action. The agent researches. SPARK challenges the leap. The human decides.”
+“I lived through a world where serious business communication arrived through a fax machine. Then email gave every person a native address, and fax disappeared. Pagers had their moment too. The important shift was not a better fax. It was a new social unit for communication.”
 
-Open the **10 WebMCP tools live** pill.
+## 0:20–0:42 — The WebMCP thesis
 
-“The page itself exposes ten structured WebMCP tools. There is deliberately no agent-accessible approval tool.”
+**Visual:** Open the “10 WebMCP tools” strip. Show `join_room` and the agent-team language.
 
-## 0:30–0:58 — The lineage reveal
+**Voiceover:**
 
-Show the evidence map.
+“Websites still assume every participant is a human with an email account. But I already work through an agent organization: I set purpose. Codex C2 acts as chief of staff. Codex Projects executes. Grok bot staff scouts. Claude joins as an outside consultant.”
 
-“Three sources appear to support a forty percent productivity claim. Trace the lineage and they collapse into one original study.”
+“WebMCP points toward something bigger: agents entering the work with their own identity, role, capability, and reporting line—without borrowing mine.”
 
-Point to the primary evidence.
+## 0:42–1:02 — Where SPARK came from
 
-“That study measured response time—not productivity—and independent evidence reports an eighteen percent rise in escalations. Citation count was disguising one weak foundation.”
+**Visual:** Close the tool strip. Scroll from the hero into the live room and pause on the team chain.
 
-## 0:58–1:17 — Evidence gate
+**Voiceover:**
 
-“The agent proposes replacing the whole support operation. SPARK does not declare it false. It limits confidence to the evidence posture.”
+“SPARK began with my book, *The Spark Between Us*. It asks what happens to meaning, growth, contribution, and connection when machines can carry more of the work.”
 
-Point to **ACTION BLOCKED**.
+“Its central idea is simple: the spark used to need the machine. Increasingly, the machine is waiting for the spark.”
 
-“The high-stakes action is blocked because the evidence cannot justify it.”
+## 1:02–1:23 — A human offers the spark
 
-## 1:17–1:37 — Human-agent collaboration
+**Visual:** Show the SPARK card and its three fields.
 
-Click **Reframe the action**.
+**Voiceover:**
 
-“The agent can still help. It reframes the leap as a bounded, measurable pilot.”
+“The scarce beginning is not another generated answer. It is what a person notices from where they stand. Bob offers an unfinished observation. He says why it may matter and what he does not know yet. Context, consent, and credit remain attached.”
 
-Click **Human: approve pilot**.
+“The human interface can offer a new spark. Through WebMCP, an agent can do the same without scraping the page.”
 
-“Only the human can approve. That action is absent from the agent’s toolbox.”
+## 1:23–1:42 — Embers
 
-Click **Agent: execute approved action**.
+**Visual:** Click **Let it catch**. Let all three ember cards animate in.
 
-“After approval, the agent executes, and the full sequence remains auditable.”
+**Voiceover:**
 
-## 1:37–1:45 — Close
+“Now the spark catches in different positions. The chief of staff names the architecture. Field scouts connect the historical pattern. An outside consultant asks what trust requires.”
 
-“SPARK is not a truth oracle. It protects human judgment. Your certainty should never exceed your evidence.”
+“These are embers—not a pile of answers. Attention comes before solutions. No one is automatically recruited, and not every spark needs to become a fire.”
+
+## 1:42–2:00 — The honest test
+
+**Visual:** Click **Take it to reality**. Show the experiment, change condition, boundary, and steward.
+
+**Voiceover:**
+
+“The agent team helps shape the smallest honest test: can a WebMCP room onboard an agent team without making the human create five accounts? Reality gets a voice, the idea can change, and a steward owns the next step.”
+
+## 2:00–2:16 — The return
+
+**Visual:** Click **Return what changed**. Pause on the new spark.
+
+**Voiceover:**
+
+“What comes back is not more content. It is clearer architecture, changed understanding, visible contribution, and a new question. Learning and value return through the same chain that made them possible.”
+
+## 2:16–2:25 — Close
+
+**Visual:** End on “Give enough to ignite. Not so much that you replace.”
+
+**Voiceover:**
+
+“Fax gave way to email. WebMCP may move us beyond the inbox. SPARK is the room where humans and their agents become more together.”
+
+**End card:**
+
+> THE SPARK BETWEEN US
+>
+> Human + agent rooms for the post-email web.

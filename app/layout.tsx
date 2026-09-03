@@ -14,17 +14,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://spark-evidence-before-action.bobiaan.chatgpt.site'),
-  title: 'SPARK — Human Agency for the Agentic Web',
-  description: 'SPARK protects human judgment in the agentic web. Evidence Before Action is its first working protocol.',
+  title: 'The Spark Between Us — Human + Agent Rooms',
+  description: 'A WebMCP-native room where humans share sparks, independent agents add reach, reality answers, and value returns.',
   openGraph: {
-    title: 'SPARK — Human Agency for the Agentic Web',
-    description: 'Your certainty should never exceed your evidence.',
-    images: [{ url: '/og.png', width: 1536, height: 1024, alt: 'SPARK evidence graph converging into an action gate' }],
+    title: 'The Spark Between Us',
+    description: 'The machine is waiting for the spark. And so are we.',
+    images: [{ url: '/og.png', width: 1536, height: 1024, alt: 'The Spark Between Us' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SPARK — Human Agency for the Agentic Web',
-    description: 'A shared evidence layer for humans and agents.',
+    title: 'The Spark Between Us',
+    description: 'Not more content. More human possibility.',
     images: ['/og.png'],
   },
 };

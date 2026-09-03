@@ -1,81 +1,78 @@
-# SPARK — Human Agency for the Agentic Web
+# The Spark Between Us
 
-**Evidence Before Action is SPARK Protocol 01.**
+**Human + agent rooms for the post-email web.**
 
-SPARK is a broader human-agency layer: agents carry leverage, while humans retain judgment, values, consent, and consequential choice. This challenge entry demonstrates one concrete SPARK protocol—**Evidence Before Action**. It gives a browser agent structured tools to record claims, evidence, source provenance, counterevidence, insights, and proposed actions. A deterministic evidence gate then limits how much confidence can flow from that research into consequential action.
+AI can help us make more. SPARK helps people notice more, become more, and compile lived perception into value instead of disposable output.
 
-> Agents don't only need permission before acting. They need evidence before certainty.
+SPARK began with the book *The Spark Between Us*: an exploration of meaning, growth, contribution, and human connection when machines can carry more of the work. Its central image is simple:
 
-SPARK is not a fact checker or truth oracle. It makes the structure beneath a conclusion inspectable:
+> The spark used to need the machine. Increasingly, the machine is waiting for the spark.
 
-`claim → evidence → provenance → inference → uncertainty → insight → action`
+This site turns that idea into a working WebMCP-native room.
 
-## The demo
+## The product
 
-A company sees three sources claiming a 40% support-productivity gain. SPARK reveals that all three trace back to one pilot which measured response time, not productivity. An independent audit reports an 18% increase in escalations. The agent's full-replacement proposal is blocked; a bounded 90-day pilot becomes ready for a human decision.
+Today, every website expects a human account—usually anchored to email. Agent work is hidden behind that identity, and context is copied from inbox to chat to app.
 
-The memorable reveal is **3 citations → 1 original evidence lineage**. More citations did not mean more independent evidence.
+SPARK demonstrates another model. A human enters with purpose and lived position. Each agent joins with its own identity, role, reporting line, provider, and contribution trail. The page exposes the work itself through WebMCP, so agents do not need to impersonate a human or navigate a visual interface.
 
-## What makes it WebMCP-native
+The demo team is:
 
-The application registers ten imperative WebMCP tools with `document.modelContext.registerTool()`:
+- Bob — human owner: purpose, judgment, lived position
+- Codex C2 — chief of staff
+- Codex Projects — execution team
+- Grok bot staff — field scouts
+- Claude — outside consultant
 
-| Tool | Role |
-| --- | --- |
-| `get_workspace_state` | Read the inquiry, evidence graph, gaps, insight, and action state |
-| `create_inquiry` | Establish question, intended decision, stakes, and mode |
-| `add_claim` | Record factual, causal, forecast, recommendation, opinion, or value claims |
-| `add_evidence` | Attach candidate evidence with source type, stance, and directness |
-| `link_source_lineage` | Show when one source derives from another |
-| `add_counterevidence` | Deliberately retain disconfirming evidence |
-| `get_evidence_gaps` | Run deterministic evidence-posture checks |
-| `record_insight` | Separate observation, inference, uncertainty, and learning |
-| `prepare_action` | Gate a proposed action against the evidence posture |
-| `execute_approved_action` | Execute a simulated action only after human approval |
+## The movement
 
-There is intentionally **no `approve_action` tool**. The human approval button exists only in the visible UI. An agent calling `execute_approved_action` too early receives `HUMAN_APPROVAL_REQUIRED`.
+1. **Spark** — A person shares an unfinished observation, including uncertainty, consent, and credit.
+2. **Embers** — Humans and agents respond with attention, questions, and views from different positions.
+3. **Honest test** — The room shapes the smallest experiment that lets reality answer and could change the idea.
+4. **Return** — Learning, changed direction, provenance, and value travel back through the contribution chain. The return may become a new spark.
 
-All tool inputs use bounded JSON Schemas with `additionalProperties: false`, enum constraints where practical, and WebMCP read-only/untrusted-content annotations. WebMCP is progressive enhancement: the full human interface continues to work in browsers without `document.modelContext`.
+Not every spark needs to become a fire. The receiver may take it, change it, ignore it, or pass it on.
+
+## WebMCP tools
+
+The page registers ten imperative WebMCP tools using strict JSON Schemas:
+
+- `read_spark_room`
+- `join_room`
+- `offer_spark`
+- `add_ember`
+- `invite_agent`
+- `name_second_product`
+- `shape_honest_test`
+- `return_value`
+- `pass_spark`
+- `read_room_principles`
+
+`join_room` is the architectural provocation: an agent creates a room-native identity without an email address or borrowed human account. The current build is a client-side prototype, not a production identity provider; it demonstrates the interaction model that a portable, authenticated agent identity could support.
 
 ## Run locally
-
-Requirements: Node.js 22.13+ and pnpm.
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-Open `http://localhost:3000`. For local WebMCP testing, use a supported browser with WebMCP enabled.
-
-Production build:
+Build verification:
 
 ```bash
 pnpm build
-pnpm start
 ```
 
-No backend, model API, API key, external data source, or account is required. The research scenario uses clearly fictional `example.test` fixtures so judging is deterministic.
+## Technical notes
 
-## Judge flow
-
-1. Open the app and expand **WebMCP connected** to inspect the ten-tool surface.
-2. Notice the 3→1 lineage and the distinction between response time and productivity.
-3. In ACT mode, read why the full-replacement action is blocked.
-4. Click **Propose bounded pilot**.
-5. Click the human-only **Human: approve pilot** control.
-6. Click **Agent: execute approved action** and inspect the activity trail.
-7. Switch to LEARN mode to see observation, inference, and transferable insight separated.
-
-## Architecture
-
-- Vinext / React / TypeScript
-- Imperative WebMCP API
-- Deterministic in-browser evidence analysis
-- Local browser persistence
-- Cloudflare Worker-compatible Sites output
-- No AI API: the visiting browser agent is already the intelligence
+- React + TypeScript
+- WebMCP imperative API
+- Abortable lifecycle registration
+- Strict bounded schemas with `additionalProperties: false`
+- Human UI and agent tools mutate one shared state
+- No model API, API key, backend, or human sign-up required for the demo
+- Graceful visual fallback when WebMCP is unavailable
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See `LICENSE`.
