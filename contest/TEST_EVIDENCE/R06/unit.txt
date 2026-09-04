@@ -1,0 +1,19 @@
+✔ R01 one unfinished observation is enough (1.1196ms)
+✔ R01 reject blank, wrong type and oversized observations (0.3315ms)
+✔ R01 retain attribution and optional detail (0.1463ms)
+✔ R02 recover a small draft and discard unknown fields (0.8463ms)
+✔ R02 corrupt or unavailable storage does not crash contribution (0.841ms)
+✔ R03 real human contribution retains previous state and attribution (0.5718ms)
+✔ R03 no fabricated return before a real test is shaped (0.6908ms)
+✔ R04 repeat citations are not independent support (0.4105ms)
+✔ R04 source URLs reject script and credential payloads (0.4091ms)
+✔ R06 withdrawal removes content and derived contributions locally (0.6485ms)
+✔ R06 consent revision preserves the spark and credit (0.2156ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 140.8329

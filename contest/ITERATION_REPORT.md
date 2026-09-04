@@ -51,3 +51,13 @@ Before: Core room followed a large hero; tiny labels and handmade modal lacked d
 After: Working room now precedes story; 16px body/14px routine labels, visible focus and 44px controls, mobile wrapping and skip link. Installed Dialog primitive supplies modal semantics and Escape/focus behavior.
 
 Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R05/. Browser verification is recorded separately.
+
+## R06
+
+2026-09-04T06:15:07.518Z; parent ebc5ad0c4ea3e9d7404bf833b67ef64c85ae20c3
+
+Before: Sharing boundary and attribution were hardcoded with no contributor revision or withdrawal.
+
+After: Human local controls revise boundary and credit, or explicitly confirm withdrawal that removes spark/derived content. Reactivation requires new spark. Clear warning that copies elsewhere cannot be recalled; no verified-identity claim.
+
+Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R06/. Browser verification is recorded separately.

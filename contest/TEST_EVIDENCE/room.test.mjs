@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { makeSpark,loadDraft,saveDraft,contribute,sourceLink,sourceSummary } from '../../app/room-input.mjs';
+import { makeSpark,loadDraft,saveDraft,contribute,sourceLink,sourceSummary,withdrawSpark,reviseConsent } from '../../app/room-input.mjs';
 
 test('R01 one unfinished observation is enough', () => {
   const s = makeSpark({observation:'  People hesitate before asking for help.  '}, 'test');
@@ -37,4 +37,14 @@ test('R04 repeat citations are not independent support',()=>{
 });
 test('R04 source URLs reject script and credential payloads',()=>{
  for(const url of ['javascript:alert(1)','https://user:password@example.org','not a url'])assert.throws(()=>sourceLink(url));
+});
+test('R06 withdrawal removes content and derived contributions locally',()=>{
+ const room={spark:{id:'s',observation:'private'},embers:[{text:'derived'}],experiment:{test:'private'},returned:{learned:'private'}};
+ const withdrawn=withdrawSpark(room);
+ assert.ok(!JSON.stringify(withdrawn).includes('private'));assert.equal(withdrawn.embers.length,0);
+ assert.throws(()=>contribute(withdrawn,'ember',{author:'A',text:'No'},'e'),/withdrawn/);
+ assert.throws(()=>reviseConsent(withdrawn,'open','A'),/reactivated/);
+});
+test('R06 consent revision preserves the spark and credit',()=>{
+ const next=reviseConsent({spark:{observation:'A'}},'Ask first','Mina');assert.equal(next.spark.observation,'A');assert.equal(next.spark.credit,'Mina');
 });

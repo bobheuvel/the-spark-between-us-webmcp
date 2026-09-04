@@ -128,5 +128,31 @@
     ],
     "status": "implemented-tests-passed",
     "browser": "See browser evidence; not implied by unit/build tests."
+  },
+  {
+    "round": "R06",
+    "time": "2026-09-04T06:15:07.518Z",
+    "parentRevision": "ebc5ad0c4ea3e9d7404bf833b67ef64c85ae20c3",
+    "sourceHashes": {
+      "app/spark-workspace.tsx": "d23e3df6f38e533edf10f7e6449380a988d2d61d7d007ee49fd23f1558dc2ffa",
+      "app/room-input.mjs": "0ae29a49496fccb28d4af7d287031f56ec3c99d92faaa08d5049f9d05da32b6d",
+      "app/globals.css": "e77cc9e85e9b3fbd3b52c414103cc259b3f903f9bb16614f5ff275f56062b92f"
+    },
+    "before": "Sharing boundary and attribution were hardcoded with no contributor revision or withdrawal.",
+    "after": "Human local controls revise boundary and credit, or explicitly confirm withdrawal that removes spark/derived content. Reactivation requires new spark. Clear warning that copies elsewhere cannot be recalled; no verified-identity claim.",
+    "tests": [
+      {
+        "name": "unit",
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "passed": true
+      }
+    ],
+    "status": "implemented-tests-passed",
+    "browser": "See browser evidence; not implied by unit/build tests."
   }
 ]

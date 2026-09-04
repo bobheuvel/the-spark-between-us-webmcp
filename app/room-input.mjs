@@ -30,6 +30,7 @@ export const contributionFields = {
  returned: [['learned','What actually happened?',900],['changed','What changed in your understanding?',900],['nextSpark','What question remains?',700],['credit','Who helped, and who should hear back?',600]]
 };
 export function contribute(room,action,input,id) {
+ if(room.withdrawn)throw Error('This spark is withdrawn. Start a new spark to contribute.');
  if(!Object.hasOwn(contributionFields,action)) throw Error('Unknown contribution.');
  if(action==='experiment' && !room.embers.length) throw Error('Add a perspective before shaping a test.');
  if(action==='returned' && !room.experiment) throw Error('Shape and try a test before returning learning.');
@@ -48,4 +49,11 @@ export function sourceSummary(embers) {
  const groups=new Map();let uncited=0;
  for(const ember of embers){if(!ember.source){uncited++;continue;}const key=sourceLink(ember.source);groups.set(key,(groups.get(key)||0)+1);}
  return {references:embers.length-uncited,unique:groups.size,uncited,repeated:[...groups].filter(([,n])=>n>1)};
+}
+export function withdrawSpark(room) {
+ return {...room,withdrawn:true,spark:{id:room.spark.id,author:'Contributor withdrawn',observation:'This spark has been withdrawn on this device.',mayMatter:'',uncertainty:'',consent:'Withdrawn. Do not carry forward.',credit:'Withdrawn'},embers:[],experiment:null,returned:null,secondProduct:'',activity:[{tool:'human_withdrawal',result:'CONTENT REMOVED LOCALLY'}]};
+}
+export function reviseConsent(room,consent,credit) {
+ if(room.withdrawn)throw Error('A withdrawn spark cannot be reactivated. Start a new one.');
+ return {...room,spark:{...room.spark,consent:textField(consent,'Sharing boundary',500),credit:textField(credit,'Credit',400)}};
 }
