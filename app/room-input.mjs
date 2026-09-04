@@ -24,3 +24,16 @@ export function loadDraft(storage) {
 export function saveDraft(storage,draft) {
   try { storage.setItem('spark-draft-v1',JSON.stringify(draft)); return true; } catch { return false; }
 }
+export const contributionFields = {
+ ember: [['author','Your name',120],['text','What caught your attention?',700]],
+ experiment: [['question','What are we curious about?',700],['test','One small thing to try',900],['contact','Who or what can give a real response?',500],['change','What result would change your mind?',700],['boundary','What must we respect?',700],['steward','Who will take the next step?',300]],
+ returned: [['learned','What actually happened?',900],['changed','What changed in your understanding?',900],['nextSpark','What question remains?',700],['credit','Who helped, and who should hear back?',600]]
+};
+export function contribute(room,action,input,id) {
+ if(!Object.hasOwn(contributionFields,action)) throw Error('Unknown contribution.');
+ if(action==='experiment' && !room.embers.length) throw Error('Add a perspective before shaping a test.');
+ if(action==='returned' && !room.experiment) throw Error('Shape and try a test before returning learning.');
+ const fields=Object.fromEntries(contributionFields[action].map(([key,label,max])=>[key,textField(input[key],label,max)]));
+ if(action==='ember')return {...room,embers:[...room.embers,{id,kind:'caught',...fields}]};
+ return {...room,[action]:fields};
+}

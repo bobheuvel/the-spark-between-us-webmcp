@@ -50,5 +50,31 @@
     ],
     "status": "implemented-tests-passed",
     "browser": "See browser evidence; not implied by unit/build tests."
+  },
+  {
+    "round": "R03",
+    "time": "2026-09-04T06:11:04.758Z",
+    "parentRevision": "b979c62c14bd24a621729f1d2de82a31fcbc89a1",
+    "sourceHashes": {
+      "app/spark-workspace.tsx": "cfd209faae8c5b56d882ed3ef5e6b4d3ee6ab2dcd653eccfc36c9db146f2908e",
+      "app/room-input.mjs": "01327ce9c30532298bc5e5560486404cc72ecb5ff39e3d28c95652ca671017a0",
+      "app/globals.css": "1afc55deae00349f512c799b42976f5c2f11983eb95128f951fbd5d69967a34f"
+    },
+    "before": "Human next-step buttons inserted canned demo results; newly joined roles were hidden by a fixed slice; immediate agent reads could lag UI state.",
+    "after": "Human forms collect real perspective, test and return text with prerequisites, retaining state and attribution. All named roles/reporting lines render. Mutation updates shared ref synchronously before returning.",
+    "tests": [
+      {
+        "name": "unit",
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "passed": true
+      }
+    ],
+    "status": "implemented-tests-passed",
+    "browser": "See browser evidence; not implied by unit/build tests."
   }
 ]

@@ -21,3 +21,13 @@ Before: Closing the composer lost an unfinished thought; all work had to be done
 After: Composer autosaves bounded local draft on change and restores after reopening/reload; low-pressure copy and truthful storage-failure feedback. No claim of idea-theft prevention.
 
 Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R02/. Browser verification is recorded separately.
+
+## R03
+
+2026-09-04T06:11:04.758Z; parent b979c62c14bd24a621729f1d2de82a31fcbc89a1
+
+Before: Human next-step buttons inserted canned demo results; newly joined roles were hidden by a fixed slice; immediate agent reads could lag UI state.
+
+After: Human forms collect real perspective, test and return text with prerequisites, retaining state and attribution. All named roles/reporting lines render. Mutation updates shared ref synchronously before returning.
+
+Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R03/. Browser verification is recorded separately.

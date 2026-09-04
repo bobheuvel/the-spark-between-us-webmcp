@@ -1,7 +1,7 @@
 'use client';
 
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
-import { makeSpark, loadDraft, saveDraft } from './room-input.mjs';
+import { makeSpark, loadDraft, saveDraft, contributionFields, contribute } from './room-input.mjs';
 import { ArrowRight, Bot, CircleDot, Download, Eye, Flame, HeartHandshake, Network, Plus, Radio, RotateCcw, Send, ShieldCheck, Sparkles, Sprout, TestTube2, UserRound, X } from 'lucide-react';
 
 type Member={id:string;name:string;kind:'human'|'agent';role:string;reportsTo?:string;provider?:string;color:string};
@@ -41,11 +41,12 @@ export default function SparkWorkspace(){
   const [formError,setFormError]=useState('');
   const [draft,setDraft]=useState<Record<string,string>>({});
   const [draftSaved,setDraftSaved]=useState(true);
+  const [action,setAction]=useState<'ember'|'experiment'|'returned'|null>(null);
   useEffect(()=>{setDraft(loadDraft(localStorage));},[]);
   const keepDraft=(e:FormEvent<HTMLFormElement>)=>{const next=Object.fromEntries(new FormData(e.currentTarget)) as Record<string,string>;setDraft(next);setDraftSaved(saveDraft(localStorage,next));};
   const ref=useRef(room);
-  useEffect(()=>{ref.current=room;localStorage.setItem('spark-room-v3',JSON.stringify(room));},[room]);
-  const mutate=useCallback((tool:string,result:string,fn:(s:Room)=>Room)=>setRoom(s=>{const n=fn(s);return{...n,activity:[...n.activity.slice(-6),{tool,result}]};}),[]);
+  useEffect(()=>{try{localStorage.setItem('spark-room-v3',JSON.stringify(room));}catch{}},[room]);
+  const mutate=useCallback((tool:string,result:string,fn:(s:Room)=>Room)=>{const n=fn(ref.current);const next={...n,activity:[...n.activity.slice(-19),{tool,result}]};ref.current=next;setRoom(next);},[]);
 
   useEffect(()=>{
     const mc=(document as Document&{modelContext?:ModelContext}).modelContext;setConnected(Boolean(mc));if(!mc)return;
@@ -66,8 +67,9 @@ export default function SparkWorkspace(){
   },[mutate]);
 
   const stage=room.returned?3:room.experiment?2:room.embers.length?1:0;
-  const advance=()=>{if(stage===0)mutate('add_ember × 3','THE SPARK CAUGHT',s=>({...s,embers:demoEmbers}));else if(stage===1)mutate('shape_honest_test','READY FOR REALITY',s=>({...s,experiment:demoExperiment}));else if(stage===2)mutate('return_value','VALUE RETURNED',s=>({...s,returned:demoReturn}));else setRoom(initial());};
-  const submit=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();try{const d=new FormData(e.currentTarget);const spark=makeSpark(Object.fromEntries(d),crypto.randomUUID());setRoom({...initial(),spark,embers:[],experiment:null,returned:null});setDraft({});saveDraft(localStorage,{});setFormError('');setComposer(false)}catch(error){setFormError(error instanceof Error?error.message:'Please check your observation.')}};
+  const advance=()=>{setFormError('');if(stage===3)setComposer(true);else setAction(stage===0?'ember':stage===1?'experiment':'returned');};
+  const submitContribution=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();if(!action)return;try{const input=Object.fromEntries(new FormData(e.currentTarget));mutate(action,'HUMAN CONTRIBUTION',s=>contribute(s,action,input,crypto.randomUUID()) as Room);setAction(null);setFormError('');}catch(error){setFormError(error instanceof Error?error.message:'Check your contribution.')}};
+  const submit=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();try{const d=new FormData(e.currentTarget);const spark=makeSpark(Object.fromEntries(d),crypto.randomUUID());mutate('offer_spark','SHARED UNFINISHED',s=>({...s,spark,embers:[],experiment:null,returned:null}));setDraft({});saveDraft(localStorage,{});setFormError('');setComposer(false)}catch(error){setFormError(error instanceof Error?error.message:'Please check your observation.')}};
   const labels=[['SPARK','Share what you see'],['EMBERS','Let it catch'],['HONEST TEST','Let reality answer'],['RETURN','Bring value back']];
 
   return <main className="spark-page">
@@ -79,11 +81,13 @@ export default function SparkWorkspace(){
     <section className="declaration"><p>The point is not to make more content. It is to help more of what is human become shareable.</p><div><span>FROM</span><s>isolated observation</s><ArrowRight/><span>TO</span><b>attention · connection · courage · capability · contribution</b></div></section>
 
     <section className="room" id="room"><header className="room-head"><div><p>SPARK ROOM 01 · LIVE PROTOTYPE</p><h2>Work begins with what someone sees.</h2></div><p>A room for unfinished observations and named contributions. The human brings purpose. Agents add reach. Reality changes the idea. Value returns.</p></header>
-      <div className="team"><div className="human-node"><UserRound/><span><b>BOB</b><small>human · purpose + judgment</small></span></div><ArrowRight/><div className="chain">{room.members.slice(1,4).map(m=><div key={m.id} style={{'--member':m.color} as React.CSSProperties}><Bot/><span><b>{m.name}</b><small>{m.role}</small></span></div>)}</div><div className="consultant"><span>DEMO · OUTSIDE</span><Bot/><div><b>Consultant</b><small>independent challenge</small></div></div></div>
+      <div className="team"><div className="chain">{room.members.map(m=><div key={m.id} style={{'--member':m.color} as React.CSSProperties}>{m.kind==='human'?<UserRound/>:<Bot/>}<span><b>{m.name} · {m.kind}</b><small>{m.role}{m.reportsTo?` · reports to ${room.members.find(x=>x.id===m.reportsTo)?.name||m.reportsTo}`:''}{m.provider==='Demo'?' · example role':''}</small></span></div>)}</div></div>
       <div className="steps">{labels.map((l,i)=><div className={`${stage>=i?'done':''} ${stage===i?'active':''}`} key={l[0]}><span>0{i+1}</span><p><b>{l[0]}</b><small>{l[1]}</small></p></div>)}</div>
       <div className="room-grid"><article className="spark-card"><div className="card-meta"><span>B</span><p><b>{room.spark.author}</b><small>shared before certainty</small></p><Radio/></div><blockquote>“{room.spark.observation}”</blockquote><div className="unfinished"><p><span>IT MAY MATTER BECAUSE</span>{room.spark.mayMatter}</p><p><span>I DO NOT KNOW YET</span>{room.spark.uncertainty}</p></div><footer><Eye/> {room.spark.consent}<span>credit · {room.spark.credit}</span></footer></article>
         <div className="catch-area">{stage===0&&<div className="waiting"><i/><p>It does not have to be finished or proven.</p><b>It only has to make a next step visible.</b></div>}{stage===1&&<div className="embers"><label>WHAT CAUGHT ELSEWHERE</label>{room.embers.map((e,i)=><article key={e.id} style={{'--delay':`${i*90}ms`} as React.CSSProperties}><span>{e.kind}</span><p>{e.text}</p><small>{e.author}</small></article>)}</div>}{stage===2&&room.experiment&&<div className="experiment"><label>THE SMALLEST HONEST TEST</label><h3>{room.experiment.question}</h3><div><TestTube2/><p>{room.experiment.test}</p></div><dl><dt>Reality gets a voice</dt><dd>{room.experiment.contact}</dd><dt>What could change us</dt><dd>{room.experiment.change}</dd><dt>Boundary</dt><dd>{room.experiment.boundary}</dd></dl><small>steward · {room.experiment.steward}</small></div>}{stage===3&&room.returned&&<div className="returned"><label>WHAT CAME BACK</label><Sparkles/><h3>{room.returned.learned}</h3><p>{room.returned.changed}</p><div><span>THE NEXT SPARK</span><b>“{room.returned.nextSpark}”</b></div><small>{room.returned.credit}</small></div>}</div></div>
       <aside className="second-product"><Sprout/><p><span>THE SECOND PRODUCT</span>{room.secondProduct}</p><div><Bot/><p><span>WHY CONTRIBUTIONS HAVE NAMES</span>Not anonymous output: distinct positions, responsibilities and return paths remain visible. In this demo, these are room-local roles.</p></div></aside>
+      <div className="contribution-controls"><button onClick={()=>{setAction('ember');setFormError('');}}><Plus/> Add your perspective</button><p>Local room · names are self-described, not verified accounts. The opening spark and roles are examples.</p></div>
+      {action&&<form className="contribution-form" onSubmit={submitContribution}><h3>{action==='ember'?'Add attention, not an instant answer':action==='experiment'?'Let reality answer':'Return what really changed'}</h3>{contributionFields[action].map(([key,label,max])=><label key={key}>{label}<textarea name={key} required maxLength={Number(max)}/></label>)}{formError&&<p role="alert">{formError}</p>}<button type="submit">Save contribution</button><button type="button" onClick={()=>setAction(null)}>Not now</button></form>}
       <footer className="room-action"><div><span>LIVE CONTRIBUTION TRAIL</span>{room.activity.slice(-4).map((a,i)=><code key={i}>{a.tool}<b>{a.result}</b></code>)}</div><button onClick={advance}>{stage===0?<Flame/>:stage===1?<TestTube2/>:stage===2?<HeartHandshake/>:<RotateCcw/>}<span>{stage===0?'Let it catch':stage===1?'Take it to reality':stage===2?'Return what changed':'Begin with another spark'}<small>{labels[(stage+1)%4][1]}</small></span><ArrowRight/></button></footer>
     </section>
 

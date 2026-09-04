@@ -1,0 +1,15 @@
+✔ R01 one unfinished observation is enough (1.2294ms)
+✔ R01 reject blank, wrong type and oversized observations (0.5184ms)
+✔ R01 retain attribution and optional detail (1.1407ms)
+✔ R02 recover a small draft and discard unknown fields (1.2322ms)
+✔ R02 corrupt or unavailable storage does not crash contribution (0.2757ms)
+✔ R03 real human contribution retains previous state and attribution (0.2622ms)
+✔ R03 no fabricated return before a real test is shaped (0.3686ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 129.9406

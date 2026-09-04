@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { makeSpark,loadDraft,saveDraft } from '../../app/room-input.mjs';
+import { makeSpark,loadDraft,saveDraft,contribute } from '../../app/room-input.mjs';
 
 test('R01 one unfinished observation is enough', () => {
   const s = makeSpark({observation:'  People hesitate before asking for help.  '}, 'test');
@@ -21,4 +21,13 @@ test('R02 recover a small draft and discard unknown fields',()=>{
 test('R02 corrupt or unavailable storage does not crash contribution',()=>{
  assert.deepEqual(loadDraft({getItem:()=>'{bad'}),{});
  assert.equal(saveDraft({setItem(){throw Error('denied')}},{}),false);
+});
+test('R03 real human contribution retains previous state and attribution',()=>{
+ const room={embers:[],spark:{author:'A'},experiment:null};
+ const next=contribute(room,'ember',{author:'B',text:'I saw it differently'},'e');
+ assert.equal(next.embers[0].author,'B'); assert.equal(next.spark.author,'A'); assert.equal(room.embers.length,0);
+});
+test('R03 no fabricated return before a real test is shaped',()=>{
+ assert.throws(()=>contribute({embers:[],experiment:null},'returned',{},'r'),/test/);
+ assert.throws(()=>contribute({embers:[]},'experiment',{},'t'),/perspective/);
 });
