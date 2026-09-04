@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { makeSpark,loadDraft,saveDraft,contribute } from '../../app/room-input.mjs';
+import { makeSpark,loadDraft,saveDraft,contribute,sourceLink,sourceSummary } from '../../app/room-input.mjs';
 
 test('R01 one unfinished observation is enough', () => {
   const s = makeSpark({observation:'  People hesitate before asking for help.  '}, 'test');
@@ -30,4 +30,11 @@ test('R03 real human contribution retains previous state and attribution',()=>{
 test('R03 no fabricated return before a real test is shaped',()=>{
  assert.throws(()=>contribute({embers:[],experiment:null},'returned',{},'r'),/test/);
  assert.throws(()=>contribute({embers:[]},'experiment',{},'t'),/perspective/);
+});
+test('R04 repeat citations are not independent support',()=>{
+ const s=sourceSummary([{source:'https://example.org/study#one'},{source:'https://example.org/study#two'},{source:'https://example.org/study'},{}]);
+ assert.equal(s.references,3);assert.equal(s.unique,1);assert.equal(s.uncited,1);
+});
+test('R04 source URLs reject script and credential payloads',()=>{
+ for(const url of ['javascript:alert(1)','https://user:password@example.org','not a url'])assert.throws(()=>sourceLink(url));
 });

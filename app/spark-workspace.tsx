@@ -1,12 +1,12 @@
 'use client';
 
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
-import { makeSpark, loadDraft, saveDraft, contributionFields, contribute } from './room-input.mjs';
+import { makeSpark, loadDraft, saveDraft, contributionFields, contribute, sourceSummary } from './room-input.mjs';
 import { ArrowRight, Bot, CircleDot, Download, Eye, Flame, HeartHandshake, Network, Plus, Radio, RotateCcw, Send, ShieldCheck, Sparkles, Sprout, TestTube2, UserRound, X } from 'lucide-react';
 
 type Member={id:string;name:string;kind:'human'|'agent';role:string;reportsTo?:string;provider?:string;color:string};
 type Spark={id:string;author:string;observation:string;mayMatter:string;uncertainty:string;consent:string;credit:string};
-type Ember={id:string;author:string;kind:'caught'|'question'|'connection';text:string};
+type Ember={id:string;author:string;kind:'caught'|'question'|'connection';text:string;source?:string};
 type Experiment={question:string;test:string;contact:string;change:string;boundary:string;steward:string};
 type Return={learned:string;changed:string;nextSpark:string;credit:string};
 type Activity={tool:string;result:string};
@@ -67,6 +67,7 @@ export default function SparkWorkspace(){
   },[mutate]);
 
   const stage=room.returned?3:room.experiment?2:room.embers.length?1:0;
+  const sources=sourceSummary(room.embers);
   const advance=()=>{setFormError('');if(stage===3)setComposer(true);else setAction(stage===0?'ember':stage===1?'experiment':'returned');};
   const submitContribution=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();if(!action)return;try{const input=Object.fromEntries(new FormData(e.currentTarget));mutate(action,'HUMAN CONTRIBUTION',s=>contribute(s,action,input,crypto.randomUUID()) as Room);setAction(null);setFormError('');}catch(error){setFormError(error instanceof Error?error.message:'Check your contribution.')}};
   const submit=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();try{const d=new FormData(e.currentTarget);const spark=makeSpark(Object.fromEntries(d),crypto.randomUUID());mutate('offer_spark','SHARED UNFINISHED',s=>({...s,spark,embers:[],experiment:null,returned:null}));setDraft({});saveDraft(localStorage,{});setFormError('');setComposer(false)}catch(error){setFormError(error instanceof Error?error.message:'Please check your observation.')}};
@@ -87,7 +88,8 @@ export default function SparkWorkspace(){
         <div className="catch-area">{stage===0&&<div className="waiting"><i/><p>It does not have to be finished or proven.</p><b>It only has to make a next step visible.</b></div>}{stage===1&&<div className="embers"><label>WHAT CAUGHT ELSEWHERE</label>{room.embers.map((e,i)=><article key={e.id} style={{'--delay':`${i*90}ms`} as React.CSSProperties}><span>{e.kind}</span><p>{e.text}</p><small>{e.author}</small></article>)}</div>}{stage===2&&room.experiment&&<div className="experiment"><label>THE SMALLEST HONEST TEST</label><h3>{room.experiment.question}</h3><div><TestTube2/><p>{room.experiment.test}</p></div><dl><dt>Reality gets a voice</dt><dd>{room.experiment.contact}</dd><dt>What could change us</dt><dd>{room.experiment.change}</dd><dt>Boundary</dt><dd>{room.experiment.boundary}</dd></dl><small>steward · {room.experiment.steward}</small></div>}{stage===3&&room.returned&&<div className="returned"><label>WHAT CAME BACK</label><Sparkles/><h3>{room.returned.learned}</h3><p>{room.returned.changed}</p><div><span>THE NEXT SPARK</span><b>“{room.returned.nextSpark}”</b></div><small>{room.returned.credit}</small></div>}</div></div>
       <aside className="second-product"><Sprout/><p><span>THE SECOND PRODUCT</span>{room.secondProduct}</p><div><Bot/><p><span>WHY CONTRIBUTIONS HAVE NAMES</span>Not anonymous output: distinct positions, responsibilities and return paths remain visible. In this demo, these are room-local roles.</p></div></aside>
       <div className="contribution-controls"><button onClick={()=>{setAction('ember');setFormError('');}}><Plus/> Add your perspective</button><p>Local room · names are self-described, not verified accounts. The opening spark and roles are examples.</p></div>
-      {action&&<form className="contribution-form" onSubmit={submitContribution}><h3>{action==='ember'?'Add attention, not an instant answer':action==='experiment'?'Let reality answer':'Return what really changed'}</h3>{contributionFields[action].map(([key,label,max])=><label key={key}>{label}<textarea name={key} required maxLength={Number(max)}/></label>)}{formError&&<p role="alert">{formError}</p>}<button type="submit">Save contribution</button><button type="button" onClick={()=>setAction(null)}>Not now</button></form>}
+      {room.embers.length>0&&<details className="source-notes"><summary>Keep the context · {room.embers.length} contributions, {sources.unique} distinct cited URLs</summary><p>Repeated citations do not become independent support. Different URLs may still copy one origin. SPARK does not verify truth or source independence.</p>{room.embers.map(e=><article key={e.id}><b>{e.author} · {e.kind}</b><p>{e.text}</p>{e.source?<a href={e.source} target="_blank" rel="noopener noreferrer">Source: {e.source}</a>:<small>Personal perspective · no source attached</small>}</article>)}</details>}
+      {action&&<form className="contribution-form" onSubmit={submitContribution}><h3>{action==='ember'?'Add attention, not an instant answer':action==='experiment'?'Let reality answer':'Return what really changed'}</h3>{contributionFields[action].map(([key,label,max])=><label key={key}>{label}<textarea name={String(key)} required maxLength={Number(max)}/></label>)}{action==='ember'&&<label>Source URL, if this came from elsewhere (optional)<input name="source" type="url" maxLength={1000}/></label>}{formError&&<p role="alert">{formError}</p>}<button type="submit">Save contribution</button><button type="button" onClick={()=>setAction(null)}>Not now</button></form>}
       <footer className="room-action"><div><span>LIVE CONTRIBUTION TRAIL</span>{room.activity.slice(-4).map((a,i)=><code key={i}>{a.tool}<b>{a.result}</b></code>)}</div><button onClick={advance}>{stage===0?<Flame/>:stage===1?<TestTube2/>:stage===2?<HeartHandshake/>:<RotateCcw/>}<span>{stage===0?'Let it catch':stage===1?'Take it to reality':stage===2?'Return what changed':'Begin with another spark'}<small>{labels[(stage+1)%4][1]}</small></span><ArrowRight/></button></footer>
     </section>
 

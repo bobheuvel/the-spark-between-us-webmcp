@@ -34,6 +34,18 @@ export function contribute(room,action,input,id) {
  if(action==='experiment' && !room.embers.length) throw Error('Add a perspective before shaping a test.');
  if(action==='returned' && !room.experiment) throw Error('Shape and try a test before returning learning.');
  const fields=Object.fromEntries(contributionFields[action].map(([key,label,max])=>[key,textField(input[key],label,max)]));
- if(action==='ember')return {...room,embers:[...room.embers,{id,kind:'caught',...fields}]};
+ if(action==='ember')return {...room,embers:[...room.embers,{id,kind:'caught',...fields,source:sourceLink(input.source)}]};
  return {...room,[action]:fields};
+}
+export function sourceLink(value) {
+ if(value==null || value==='')return '';
+ const raw=textField(value,'Source URL',1000);
+ let url;try{url=new URL(raw);}catch{throw Error('Use a complete http or https source URL.');}
+ if(!['https:','http:'].includes(url.protocol)||url.username||url.password)throw Error('Use a public http or https source URL without credentials.');
+ url.hash='';return url.href;
+}
+export function sourceSummary(embers) {
+ const groups=new Map();let uncited=0;
+ for(const ember of embers){if(!ember.source){uncited++;continue;}const key=sourceLink(ember.source);groups.set(key,(groups.get(key)||0)+1);}
+ return {references:embers.length-uncited,unique:groups.size,uncited,repeated:[...groups].filter(([,n])=>n>1)};
 }

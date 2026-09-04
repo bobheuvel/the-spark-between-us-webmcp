@@ -31,3 +31,13 @@ Before: Human next-step buttons inserted canned demo results; newly joined roles
 After: Human forms collect real perspective, test and return text with prerequisites, retaining state and attribution. All named roles/reporting lines render. Mutation updates shared ref synchronously before returning.
 
 Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R03/. Browser verification is recorded separately.
+
+## R04
+
+2026-09-04T06:12:15.311Z; parent d34611dbc2ea175565502f994dc0f5bdaff05443
+
+Before: Attribution did not include source links; earlier embers disappeared from view at the test/return stage.
+
+After: Persistent expandable context shows every named contribution and optional safe source link at every stage. Exact-URL repeats collapse in distinct URL count with explicit no truth/independence verification claim.
+
+Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R04/. Browser verification is recorded separately.

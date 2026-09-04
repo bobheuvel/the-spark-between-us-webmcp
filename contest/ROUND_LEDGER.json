@@ -76,5 +76,31 @@
     ],
     "status": "implemented-tests-passed",
     "browser": "See browser evidence; not implied by unit/build tests."
+  },
+  {
+    "round": "R04",
+    "time": "2026-09-04T06:12:15.311Z",
+    "parentRevision": "d34611dbc2ea175565502f994dc0f5bdaff05443",
+    "sourceHashes": {
+      "app/spark-workspace.tsx": "ba7ffc21cb9be28f671f3a3e7a01f1a52f208b81d20ba42e1121f307e02df62a",
+      "app/room-input.mjs": "53dd00b912aed9f15415397b4461ef8056d2e8e6f13748b08b309d5be3757467",
+      "app/globals.css": "1afc55deae00349f512c799b42976f5c2f11983eb95128f951fbd5d69967a34f"
+    },
+    "before": "Attribution did not include source links; earlier embers disappeared from view at the test/return stage.",
+    "after": "Persistent expandable context shows every named contribution and optional safe source link at every stage. Exact-URL repeats collapse in distinct URL count with explicit no truth/independence verification claim.",
+    "tests": [
+      {
+        "name": "unit",
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "passed": true
+      }
+    ],
+    "status": "implemented-tests-passed",
+    "browser": "See browser evidence; not implied by unit/build tests."
   }
 ]
