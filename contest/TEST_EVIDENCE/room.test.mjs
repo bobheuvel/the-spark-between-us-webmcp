@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { makeSpark,loadDraft,saveDraft,contribute,sourceLink,sourceSummary,withdrawSpark,reviseConsent,validateToolInput,checkRoomMutation } from '../../app/room-input.mjs';
+import { makeSpark,loadDraft,saveDraft,contribute,sourceLink,sourceSummary,withdrawSpark,reviseConsent,validateToolInput,checkRoomMutation,restoreRoom } from '../../app/room-input.mjs';
 
 test('R01 one unfinished observation is enough', () => {
   const s = makeSpark({observation:'  People hesitate before asking for help.  '}, 'test');
@@ -58,4 +58,16 @@ test('R07 withdrawn, stale and out-of-sequence mutations fail before state updat
  assert.throws(()=>checkRoomMutation({...room,withdrawn:true},'add_ember',{}),/WITHDRAWN/);
  assert.throws(()=>checkRoomMutation(room,'add_ember',{expectedSparkId:'old'}),/STALE/);
  assert.throws(()=>checkRoomMutation(room,'return_value',{}),/test/);
+});
+const savedRoom=()=>({members:[],spark:makeSpark({observation:'Saved observation'},'s'),embers:[],experiment:null,returned:null,secondProduct:'Listening',activity:[]});
+test('R08 reload restores validated room without dropping attribution',()=>{
+ const room=savedRoom();const result=restoreRoom(JSON.stringify({version:1,room}),{});
+ assert.equal(result.room.spark.observation,'Saved observation');assert.equal(result.room.spark.credit,'You');
+});
+test('R08 corrupt, oversized or hostile stored state fails closed without throwing',()=>{
+ const fallback=savedRoom();for(const raw of ['{','x'.repeat(200001),JSON.stringify({version:1,room:{}})])assert.equal(restoreRoom(raw,fallback).room,fallback);
+ const hostile=savedRoom();hostile.embers=[{id:'e',author:'A',kind:'caught',text:'x',source:'javascript:alert(1)'}];assert.equal(restoreRoom(JSON.stringify(hostile),fallback).room,fallback);
+});
+test('R08 withdrawal remains withdrawn after reload',()=>{
+ const result=restoreRoom(JSON.stringify(withdrawSpark(savedRoom())),{});assert.equal(result.room.withdrawn,true);assert.equal(result.room.embers.length,0);
 });

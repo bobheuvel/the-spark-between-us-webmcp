@@ -2,7 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
-import { makeSpark, loadDraft, saveDraft, contributionFields, contribute, sourceSummary, sourceLink, withdrawSpark, reviseConsent, validateToolInput, checkRoomMutation } from './room-input.mjs';
+import { makeSpark, loadDraft, saveDraft, contributionFields, contribute, sourceSummary, sourceLink, withdrawSpark, reviseConsent, validateToolInput, checkRoomMutation, restoreRoom } from './room-input.mjs';
 import { ArrowRight, Bot, CircleDot, Download, Eye, Flame, HeartHandshake, Network, Plus, Radio, RotateCcw, Send, ShieldCheck, Sparkles, Sprout, TestTube2, UserRound, X } from 'lucide-react';
 
 type Member={id:string;name:string;kind:'human'|'agent';role:string;reportsTo?:string;provider?:string;color:string};
@@ -43,14 +43,19 @@ export default function SparkWorkspace(){
   const [draft,setDraft]=useState<Record<string,string>>({});
   const [draftSaved,setDraftSaved]=useState(true);
   const [action,setAction]=useState<'ember'|'experiment'|'returned'|null>(null);
+  const [ready,setReady]=useState(false);
+  const [storageStatus,setStorageStatus]=useState('Opening local room…');
+  const [viewStage,setViewStage]=useState<number|null>(null);
+  const storageBlocked=useRef(false);
   useEffect(()=>{setDraft(loadDraft(localStorage));},[]);
   const keepDraft=(e:FormEvent<HTMLFormElement>)=>{const next=Object.fromEntries(new FormData(e.currentTarget)) as Record<string,string>;setDraft(next);setDraftSaved(saveDraft(localStorage,next));};
   const ref=useRef(room);
-  useEffect(()=>{try{localStorage.setItem('spark-room-v3',JSON.stringify(room));}catch{}},[room]);
-  const mutate=useCallback((tool:string,result:string,fn:(s:Room)=>Room)=>{const n=fn(ref.current);const next={...n,activity:[...n.activity.slice(-19),{tool,result}]};ref.current=next;setRoom(next);},[]);
+  useEffect(()=>{try{const restored=restoreRoom(localStorage.getItem('spark-room-v4')||localStorage.getItem('spark-room-v3'),initial());storageBlocked.current=restored.status.includes('could not');ref.current=restored.room as Room;setRoom(restored.room as Room);setStorageStatus(restored.status);}catch{storageBlocked.current=true;setStorageStatus('Storage unavailable. This room lasts only while the page is open.');}setReady(true);},[]);
+  useEffect(()=>{if(!ready||storageBlocked.current)return;try{localStorage.setItem('spark-room-v4',JSON.stringify({version:1,room}));setStorageStatus('Saved on this device · use one tab to avoid conflicting edits');}catch{setStorageStatus('Room could not be saved. Keep the page open and export a copy.');}},[room,ready]);
+  const mutate=useCallback((tool:string,result:string,fn:(s:Room)=>Room)=>{const n=fn(ref.current);const next={...n,activity:[...n.activity.slice(-19),{tool,result}]};ref.current=next;setRoom(next);setViewStage(null);},[]);
 
   useEffect(()=>{
-    const mc=(document as Document&{modelContext?:ModelContext}).modelContext;setConnected(false);if(!mc?.registerTool)return;
+    const mc=(document as Document&{modelContext?:ModelContext}).modelContext;setConnected(false);if(!ready||!mc?.registerTool)return;
     const controller=new AbortController();
     const tools:Tool[]=[
       {name:'read_spark_room',description:'Read the people, named room-local roles, reporting lines, spark, embers, experiment and returned value in this room.',inputSchema:schema({}),annotations:{readOnlyHint:true,untrustedContentHint:true},execute:async()=>JSON.stringify(ref.current)},
@@ -74,9 +79,10 @@ export default function SparkWorkspace(){
         try{if(controller.signal.aborted)throw Error('Tool registration expired.');const input=validateToolInput(raw,definition);if(writes)checkRoomMutation(ref.current,t.name,input);const {expectedSparkId,...fields}=input as Record<string,string>;return await t.execute(fields);}catch(error){return JSON.stringify({status:'ERROR',message:error instanceof Error?error.message:'Input rejected',stateUnchanged:true});}
       }},{signal:controller.signal});
     });Promise.all(registrations).then(()=>{if(!controller.signal.aborted)setConnected(true);}).catch(fail);}catch{fail();}return()=>controller.abort();
-  },[mutate]);
+  },[mutate,ready]);
 
-  const stage=room.returned?3:room.experiment?2:room.embers.length?1:0;
+  const progress=room.returned?3:room.experiment?2:room.embers.length?1:0;
+  const stage=viewStage??progress;
   const sources=sourceSummary(room.embers);
   const advance=()=>{setFormError('');if(stage===3)setComposer(true);else setAction(stage===0?'ember':stage===1?'experiment':'returned');};
   const submitContribution=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();if(!action)return;try{const input=Object.fromEntries(new FormData(e.currentTarget));mutate(action,'HUMAN CONTRIBUTION',s=>contribute(s,action,input,crypto.randomUUID()) as Room);setAction(null);setFormError('');}catch(error){setFormError(error instanceof Error?error.message:'Check your contribution.')}};
@@ -94,8 +100,9 @@ export default function SparkWorkspace(){
     <section className="declaration"><p>The point is not to make more content. It is to help more of what is human become shareable.</p><div><span>FROM</span><s>isolated observation</s><ArrowRight/><span>TO</span><b>attention · connection · courage · capability · contribution</b></div></section>
 
     <section className="room" id="room"><header className="room-head"><div><p>SPARK ROOM 01 · LIVE PROTOTYPE</p><h2>Work begins with what someone sees.</h2></div><p>A room for unfinished observations and named contributions. The human brings purpose. Agents add reach. Reality changes the idea. Value returns.</p></header>
-      <div className="team"><div className="chain">{room.members.map(m=><div key={m.id} style={{'--member':m.color} as React.CSSProperties}>{m.kind==='human'?<UserRound/>:<Bot/>}<span><b>{m.name} · {m.kind}</b><small>{m.role}{m.reportsTo?` · reports to ${room.members.find(x=>x.id===m.reportsTo)?.name||m.reportsTo}`:''}{m.provider==='Demo'?' · example role':''}</small></span></div>)}</div></div>
-      <div className="steps">{labels.map((l,i)=><div className={`${stage>=i?'done':''} ${stage===i?'active':''}`} key={l[0]}><span>0{i+1}</span><p><b>{l[0]}</b><small>{l[1]}</small></p></div>)}</div>
+      <p className="storage-status" role="status">{storageStatus}</p>
+      <details className="team-disclosure"><summary>{room.members.length} people and agent roles · see who contributed</summary><div className="team"><div className="chain">{room.members.map(m=><div key={m.id} style={{'--member':m.color} as React.CSSProperties}>{m.kind==='human'?<UserRound/>:<Bot/>}<span><b>{m.name} · {m.kind}</b><small>{m.role}{m.reportsTo?` · reports to ${room.members.find(x=>x.id===m.reportsTo)?.name||m.reportsTo}`:''}{m.provider==='Demo'?' · example role':''}</small></span></div>)}</div></div></details>
+      <div className="steps" aria-label="Review the spark journey">{labels.map((l,i)=><button disabled={i>progress} aria-pressed={stage===i} onClick={()=>setViewStage(i)} className={`${progress>=i?'done':''} ${stage===i?'active':''}`} key={l[0]}><span>0{i+1}</span><span><b>{l[0]}</b><small>{l[1]}</small></span></button>)}</div>
       <div className="room-grid"><article className="spark-card"><div className="card-meta"><span>B</span><p><b>{room.spark.author}</b><small>shared before certainty</small></p><Radio/></div><blockquote>“{room.spark.observation}”</blockquote><div className="unfinished"><p><span>IT MAY MATTER BECAUSE</span>{room.spark.mayMatter}</p><p><span>I DO NOT KNOW YET</span>{room.spark.uncertainty}</p></div><footer><Eye/> {room.spark.consent}<span>credit · {room.spark.credit}</span></footer></article>
         <div className="catch-area">{stage===0&&<div className="waiting"><i/><p>It does not have to be finished or proven.</p><b>It only has to make a next step visible.</b></div>}{stage===1&&<div className="embers"><label>WHAT CAUGHT ELSEWHERE</label>{room.embers.map((e,i)=><article key={e.id} style={{'--delay':`${i*90}ms`} as React.CSSProperties}><span>{e.kind}</span><p>{e.text}</p><small>{e.author}</small></article>)}</div>}{stage===2&&room.experiment&&<div className="experiment"><label>THE SMALLEST HONEST TEST</label><h3>{room.experiment.question}</h3><div><TestTube2/><p>{room.experiment.test}</p></div><dl><dt>Reality gets a voice</dt><dd>{room.experiment.contact}</dd><dt>What could change us</dt><dd>{room.experiment.change}</dd><dt>Boundary</dt><dd>{room.experiment.boundary}</dd></dl><small>steward · {room.experiment.steward}</small></div>}{stage===3&&room.returned&&<div className="returned"><label>WHAT CAME BACK</label><Sparkles/><h3>{room.returned.learned}</h3><p>{room.returned.changed}</p><div><span>THE NEXT SPARK</span><b>“{room.returned.nextSpark}”</b></div><small>{room.returned.credit}</small></div>}</div></div>
       <aside className="second-product"><Sprout/><p><span>THE SECOND PRODUCT</span>{room.secondProduct}</p><div><Bot/><p><span>WHY CONTRIBUTIONS HAVE NAMES</span>Not anonymous output: distinct positions, responsibilities and return paths remain visible. In this demo, these are room-local roles.</p></div></aside>

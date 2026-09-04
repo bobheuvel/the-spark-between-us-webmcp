@@ -180,5 +180,31 @@
     ],
     "status": "implemented-tests-passed",
     "browser": "See browser evidence; not implied by unit/build tests."
+  },
+  {
+    "round": "R08",
+    "time": "2026-09-04T06:19:23.237Z",
+    "parentRevision": "0899b1cb4582d9bc819b8032aea8373235babc2e",
+    "sourceHashes": {
+      "app/spark-workspace.tsx": "68fcb37603997a418cf67a2e1baf76df742b8cfae405d5266453122679355947",
+      "app/room-input.mjs": "294047f1c9dc7c3d0ecb3adcc0381fd772225d0b87b8cda7fe9d24ecd320991e",
+      "app/globals.css": "c89d5f56549e9b37de72ec87e0b63996a4e6f7fe52e6b8b9a1fa4061fe9b0426"
+    },
+    "before": "Reload overwrote the room; corrupt storage was unhandled; completed stages could not be revisited; mobile roster dominated first viewport.",
+    "after": "Validated versioned room hydration precedes saving and tool registration; corrupt data left untouched with visible status. Completed stages are keyboard buttons. Roster collapsed and role names readable; local-only single-tab limitations stated.",
+    "tests": [
+      {
+        "name": "unit",
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "passed": true
+      }
+    ],
+    "status": "implemented-tests-passed",
+    "browser": "See browser evidence; not implied by unit/build tests."
   }
 ]

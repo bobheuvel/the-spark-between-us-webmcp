@@ -81,3 +81,24 @@ export function checkRoomMutation(room,name,input) {
  if(room.embers.length>=100 && ['add_ember','invite_agent'].includes(name))throw Error('Room contribution limit reached.');
  if(room.members.length>=30 && name==='join_room')throw Error('Room participant limit reached.');
 }
+export function restoreRoom(raw,fallback) {
+ try {
+  if(!raw)return {room:fallback,status:'New local room'};
+  if(raw.length>200000)throw Error('Oversized room');
+  const parsed=JSON.parse(raw);const value=parsed.version===1?parsed.room:parsed;
+  const strings=(obj,fields)=>Object.fromEntries(Object.entries(fields).map(([key,max])=>{
+   if(typeof obj?.[key]!=='string'||obj[key].length>max)throw Error('Invalid saved field');return [key,obj[key]];
+  }));
+  if(!Array.isArray(value.members)||value.members.length>30||!Array.isArray(value.embers)||value.embers.length>100||!Array.isArray(value.activity)||value.activity.length>20)throw Error('Invalid saved collections');
+  const spark=strings(value.spark,{id:120,author:120,observation:900,mayMatter:700,uncertainty:700,consent:500,credit:400});
+  const members=value.members.map(m=>{if(!['human','agent'].includes(m.kind))throw Error('Invalid role');return {...strings(m,{id:120,name:120,kind:10,role:300}),color:/^#[0-9a-f]{6}$/i.test(m.color)?m.color:'#2475a8',...(m.reportsTo?{reportsTo:textField(m.reportsTo,'Reporting line',120)}:{}),...(m.provider?{provider:textField(m.provider,'Provider',120)}:{})};});
+  const embers=value.embers.map(e=>{if(!['caught','question','connection'].includes(e.kind))throw Error('Invalid ember');return {...strings(e,{id:120,author:450,kind:20,text:700}),source:sourceLink(e.source)};});
+  const experiment=value.experiment?strings(value.experiment,{question:700,test:900,contact:500,change:700,boundary:700,steward:300}):null;
+  const returned=value.returned?strings(value.returned,{learned:900,changed:900,nextSpark:700,credit:600}):null;
+  if(returned&&!experiment)throw Error('Return without test');
+  if(typeof value.secondProduct!=='string'||value.secondProduct.length>800)throw Error('Invalid capability');
+  const activity=value.activity.map(a=>strings(a,{tool:100,result:150}));
+  const room={members,spark,embers,experiment,returned,secondProduct:value.secondProduct,activity,withdrawn:value.withdrawn===true};
+  return {room:room.withdrawn?withdrawSpark(room):room,status:'Restored on this device'};
+ } catch { return {room:fallback,status:'Saved room could not be restored. Original saved data was left untouched.'}; }
+}

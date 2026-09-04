@@ -71,3 +71,13 @@ Before: Tool schemas were hints only; invalid input, stale spark writes, false s
 After: Every tool validates runtime object fields/types/limits. Content mutations require current spark ID and respect withdrawal/stage limits. offer_spark only prepares human-reviewed draft; invitations/handoffs explicitly not sent. Registration catches sync/async errors and aborts partial registrations.
 
 Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R07/. Browser verification is recorded separately.
+
+## R08
+
+2026-09-04T06:19:23.237Z; parent 0899b1cb4582d9bc819b8032aea8373235babc2e
+
+Before: Reload overwrote the room; corrupt storage was unhandled; completed stages could not be revisited; mobile roster dominated first viewport.
+
+After: Validated versioned room hydration precedes saving and tool registration; corrupt data left untouched with visible status. Completed stages are keyboard buttons. Roster collapsed and role names readable; local-only single-tab limitations stated.
+
+Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R08/. Browser verification is recorded separately.
