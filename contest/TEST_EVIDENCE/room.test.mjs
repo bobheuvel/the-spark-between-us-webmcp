@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { makeSpark,loadDraft,saveDraft,contribute,sourceLink,sourceSummary,withdrawSpark,reviseConsent } from '../../app/room-input.mjs';
+import { makeSpark,loadDraft,saveDraft,contribute,sourceLink,sourceSummary,withdrawSpark,reviseConsent,validateToolInput,checkRoomMutation } from '../../app/room-input.mjs';
 
 test('R01 one unfinished observation is enough', () => {
   const s = makeSpark({observation:'  People hesitate before asking for help.  '}, 'test');
@@ -47,4 +47,15 @@ test('R06 withdrawal removes content and derived contributions locally',()=>{
 });
 test('R06 consent revision preserves the spark and credit',()=>{
  const next=reviseConsent({spark:{observation:'A'}},'Ask first','Mina');assert.equal(next.spark.observation,'A');assert.equal(next.spark.credit,'Mina');
+});
+test('R07 runtime schema rejects unknown/prototype keys, enum, type and size attacks',()=>{
+ const schema={properties:{text:{type:'string',maxLength:8},kind:{type:'string',enum:['caught']}},required:['text']};
+ for(const input of [null,[],{text:1},{text:' '},{text:'a'.repeat(9)},{text:'ok',kind:'admin'},JSON.parse('{"text":"ok","__proto__":{}}')])assert.throws(()=>validateToolInput(input,schema));
+ assert.deepEqual(validateToolInput({text:' ok '},schema),{text:'ok'});
+});
+test('R07 withdrawn, stale and out-of-sequence mutations fail before state updates',()=>{
+ const room={spark:{id:'s'},embers:[],members:[],experiment:null};
+ assert.throws(()=>checkRoomMutation({...room,withdrawn:true},'add_ember',{}),/WITHDRAWN/);
+ assert.throws(()=>checkRoomMutation(room,'add_ember',{expectedSparkId:'old'}),/STALE/);
+ assert.throws(()=>checkRoomMutation(room,'return_value',{}),/test/);
 });

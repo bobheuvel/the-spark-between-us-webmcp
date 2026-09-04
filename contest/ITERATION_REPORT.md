@@ -61,3 +61,13 @@ Before: Sharing boundary and attribution were hardcoded with no contributor revi
 After: Human local controls revise boundary and credit, or explicitly confirm withdrawal that removes spark/derived content. Reactivation requires new spark. Clear warning that copies elsewhere cannot be recalled; no verified-identity claim.
 
 Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R06/. Browser verification is recorded separately.
+
+## R07
+
+2026-09-04T06:16:28.676Z; parent 081456f53e2235a189877ac417f7655dd978dc7e
+
+Before: Tool schemas were hints only; invalid input, stale spark writes, false sent statuses and registration failure paths were unhandled.
+
+After: Every tool validates runtime object fields/types/limits. Content mutations require current spark ID and respect withdrawal/stage limits. offer_spark only prepares human-reviewed draft; invitations/handoffs explicitly not sent. Registration catches sync/async errors and aborts partial registrations.
+
+Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R07/. Browser verification is recorded separately.

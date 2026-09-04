@@ -154,5 +154,31 @@
     ],
     "status": "implemented-tests-passed",
     "browser": "See browser evidence; not implied by unit/build tests."
+  },
+  {
+    "round": "R07",
+    "time": "2026-09-04T06:16:28.676Z",
+    "parentRevision": "081456f53e2235a189877ac417f7655dd978dc7e",
+    "sourceHashes": {
+      "app/spark-workspace.tsx": "edaefcf29d80a89b6db5a0586b5266bfda463b0cf04f6cb9706baef8f444de05",
+      "app/room-input.mjs": "ee134d1632892eec153b4b064013f55310cb57b73c8bc55b670089880aafb1f2",
+      "app/globals.css": "e77cc9e85e9b3fbd3b52c414103cc259b3f903f9bb16614f5ff275f56062b92f"
+    },
+    "before": "Tool schemas were hints only; invalid input, stale spark writes, false sent statuses and registration failure paths were unhandled.",
+    "after": "Every tool validates runtime object fields/types/limits. Content mutations require current spark ID and respect withdrawal/stage limits. offer_spark only prepares human-reviewed draft; invitations/handoffs explicitly not sent. Registration catches sync/async errors and aborts partial registrations.",
+    "tests": [
+      {
+        "name": "unit",
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "passed": true
+      }
+    ],
+    "status": "implemented-tests-passed",
+    "browser": "See browser evidence; not implied by unit/build tests."
   }
 ]

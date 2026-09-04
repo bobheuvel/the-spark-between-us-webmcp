@@ -57,3 +57,27 @@ export function reviseConsent(room,consent,credit) {
  if(room.withdrawn)throw Error('A withdrawn spark cannot be reactivated. Start a new one.');
  return {...room,spark:{...room.spark,consent:textField(consent,'Sharing boundary',500),credit:textField(credit,'Credit',400)}};
 }
+export function validateToolInput(input,schema) {
+ if(!input || typeof input!=='object' || Array.isArray(input))throw Error('Input must be an object.');
+ for(const key of Object.keys(input))if(!Object.hasOwn(schema.properties,key))throw Error(`Unknown field: ${key}`);
+ for(const key of schema.required||[])if(!Object.hasOwn(input,key))throw Error(`Missing field: ${key}`);
+ const clean={};
+ for(const [key,value] of Object.entries(input)){
+  const rule=schema.properties[key];
+  if(rule.type==='string'){
+   if(typeof value!=='string')throw Error(`${key} must be text.`);
+   if(!value.trim() || value.length>(rule.maxLength||2000))throw Error(`${key} is empty or too long.`);
+   if(rule.enum&&!rule.enum.includes(value))throw Error(`Invalid ${key}.`);
+   clean[key]=value.trim();
+  }else throw Error(`Unsupported field: ${key}`);
+ }
+ return clean;
+}
+export function checkRoomMutation(room,name,input) {
+ if(room.withdrawn && name!=='offer_spark')throw Error('SPARK_WITHDRAWN: human must start a new spark.');
+ if(input.expectedSparkId && input.expectedSparkId!==room.spark.id)throw Error('STALE_SPARK: read the room again.');
+ if(name==='shape_honest_test'&&!room.embers.length)throw Error('Add a perspective before shaping a test.');
+ if(name==='return_value'&&!room.experiment)throw Error('Shape and try a test before returning learning.');
+ if(room.embers.length>=100 && ['add_ember','invite_agent'].includes(name))throw Error('Room contribution limit reached.');
+ if(room.members.length>=30 && name==='join_room')throw Error('Room participant limit reached.');
+}
