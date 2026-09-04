@@ -1,0 +1,15 @@
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+const stamp=new Date().toISOString().replace(/[:.]/g,'-');
+const out=`contest/TEST_EVIDENCE/release-${stamp}`;mkdirSync(out,{recursive:true});
+const checks=[['unit',['--test','contest/TEST_EVIDENCE/room.test.mjs']],['types',['node_modules/typescript/bin/tsc','--noEmit','--incremental','false']],['build',['node_modules/vinext/dist/cli.js','build']]];
+const results=checks.map(([name,args])=>{const r=spawnSync(process.execPath,args,{encoding:'utf8'});writeFileSync(`${out}/${name}.txt`,String(r.stdout)+String(r.stderr));return {name,exitCode:r.status};});
+const pkg=JSON.parse(readFileSync('package.json','utf8'));
+const dependencies=Object.entries({...pkg.dependencies,...pkg.devDependencies}).map(([name,declared])=>{try{const p=JSON.parse(readFileSync(`node_modules/${name}/package.json`,'utf8'));return {name,declared,installed:p.version,license:p.license||'NOT DECLARED',repository:p.repository||null};}catch{return {name,declared,status:'MANIFEST NOT READ'};}});
+writeFileSync(`${out}/dependency-licenses.json`,JSON.stringify(dependencies,null,2));
+const paths=['app/spark-workspace.tsx','app/room-input.mjs','app/globals.css','app/layout.tsx','package.json','pnpm-lock.yaml','LICENSE','public/og.png','public/favicon.svg','public/video-cards.html','public/spark-companion-extension.zip'];
+const hashes=Object.fromEntries(paths.map(p=>[p,createHash('sha256').update(readFileSync(p)).digest('hex')]));
+const revision=spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).stdout.trim();
+const result={time:new Date().toISOString(),parentRevision:revision,results,hashes,licenseScope:'Direct installed dependency metadata only; not a full transitive legal clearance.',output:out};
+writeFileSync(`${out}/result.json`,JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));if(results.some(r=>r.exitCode!==0))process.exitCode=1;
