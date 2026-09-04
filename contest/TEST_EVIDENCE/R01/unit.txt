@@ -1,0 +1,11 @@
+✔ R01 one unfinished observation is enough (2.8093ms)
+✔ R01 reject blank, wrong type and oversized observations (1.1634ms)
+✔ R01 retain attribution and optional detail (0.5034ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 241.2229

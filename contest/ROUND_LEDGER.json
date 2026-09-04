@@ -1,0 +1,28 @@
+[
+  {
+    "round": "R01",
+    "time": "2026-09-04T06:07:14.558Z",
+    "parentRevision": "0eab53e8203de38ea232709614650a6c9c03eff5",
+    "sourceHashes": {
+      "app/spark-workspace.tsx": "9d52e80005fb1232a739feb2987cf172b83ae46add50ecff3b6698235a7a989e",
+      "app/room-input.mjs": "62bf13d1eabe67c6ed9694a9da26eda1853450be611f8f5ed50e867153f52036",
+      "app/globals.css": "b4cffe5f4d13bc816694169a1a461b8e9b27ea94e9bb5e387d05505f61376808"
+    },
+    "before": "Share a spark required four fields; blank or overlong input lacked shared validation.",
+    "after": "Share a spark now requires one observation, optional name/context, explicit unfinished defaults and actionable validation. Workflow: Share a spark, enter I noticed only, Offer this unfinished.",
+    "tests": [
+      {
+        "name": "unit",
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "passed": true
+      }
+    ],
+    "status": "implemented-tests-passed",
+    "browser": "See browser evidence; not implied by unit/build tests."
+  }
+]

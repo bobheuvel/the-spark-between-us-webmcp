@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { makeSpark } from './room-input.mjs';
 import { ArrowRight, Bot, CircleDot, Download, Eye, Flame, HeartHandshake, Network, Plus, Radio, RotateCcw, Send, ShieldCheck, Sparkles, Sprout, TestTube2, UserRound, X } from 'lucide-react';
 
 type Member={id:string;name:string;kind:'human'|'agent';role:string;reportsTo?:string;provider?:string;color:string};
@@ -37,6 +38,7 @@ export default function SparkWorkspace(){
   const [connected,setConnected]=useState<boolean|null>(null);
   const [showTools,setShowTools]=useState(false);
   const [composer,setComposer]=useState(false);
+  const [formError,setFormError]=useState('');
   const ref=useRef(room);
   useEffect(()=>{ref.current=room;localStorage.setItem('spark-room-v3',JSON.stringify(room));},[room]);
   const mutate=useCallback((tool:string,result:string,fn:(s:Room)=>Room)=>setRoom(s=>{const n=fn(s);return{...n,activity:[...n.activity.slice(-6),{tool,result}]};}),[]);
@@ -61,7 +63,7 @@ export default function SparkWorkspace(){
 
   const stage=room.returned?3:room.experiment?2:room.embers.length?1:0;
   const advance=()=>{if(stage===0)mutate('add_ember × 3','THE SPARK CAUGHT',s=>({...s,embers:demoEmbers}));else if(stage===1)mutate('shape_honest_test','READY FOR REALITY',s=>({...s,experiment:demoExperiment}));else if(stage===2)mutate('return_value','VALUE RETURNED',s=>({...s,returned:demoReturn}));else setRoom(initial());};
-  const submit=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const d=new FormData(e.currentTarget);setRoom({...initial(),spark:{id:`spark-${Date.now()}`,author:String(d.get('author')),observation:String(d.get('observation')),mayMatter:String(d.get('mayMatter')),uncertainty:String(d.get('uncertainty')),consent:'Keep context and ask before taking it elsewhere.',credit:String(d.get('author'))},embers:[],experiment:null,returned:null});setComposer(false)};
+  const submit=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();try{const d=new FormData(e.currentTarget);const spark=makeSpark(Object.fromEntries(d),crypto.randomUUID());setRoom({...initial(),spark,embers:[],experiment:null,returned:null});setFormError('');setComposer(false)}catch(error){setFormError(error instanceof Error?error.message:'Please check your observation.')}};
   const labels=[['SPARK','Share what you see'],['EMBERS','Let it catch'],['HONEST TEST','Let reality answer'],['RETURN','Bring value back']];
 
   return <main className="spark-page">
@@ -86,6 +88,6 @@ export default function SparkWorkspace(){
     <section className="companion" id="companion"><header><p className="eyebrow">OPTIONAL ADD-ON · WORKING BROWSER EXTENSION</p><h2>Carry your purpose<br/>into the <em>rest of the web.</em></h2><p>SPARK stays a human sharing system. The Companion is a separate, user-owned reflection layer for consequential agent actions.</p></header><div className="companion-demo"><div className="companion-card"><span><ShieldCheck/> SPARK COMPANION</span><h3>Intent before action.</h3><label>MY PURPOSE<strong>Help people learn without replacing their judgment.</strong></label><label>PROTECT<strong>Consent · credit · human choice</strong></label><label>PAUSE BEFORE<strong>Send · publish · buy · delete</strong></label></div><div className="companion-result"><small>WHEN AN ACTION CROSSES THE LINE</small><h3>“Does this still serve what you meant?”</h3><p>The person can continue, revise or stop. Their purpose stays visible at the moment it matters.</p><ul><li><i/>Local by default</li><li><i/>No account required</li><li><i/>User can disable it</li></ul><a href="/spark-companion-extension.zip" download><Download/> Download extension prototype</a></div></div></section>
     <section className="closing"><CircleDot/><div><p>THE SPARK BETWEEN US</p><h2>Share what only you can see.<br/><em>Become more together.</em></h2></div><p>SPARK gives human perception somewhere to travel: other people and agents can help it catch, meet reality, become useful and return—while the person, growth and contribution remain visible.</p></section>
 
-    {composer&&<div className="modal"><form onSubmit={submit}><header><div><p>OFFER A SPARK</p><h2>Share before certainty.</h2></div><button type="button" onClick={()=>setComposer(false)} aria-label="Close"><X/></button></header><label>Your name<input name="author" defaultValue="You" required/></label><label>I noticed…<textarea name="observation" required/></label><label>It may matter because…<textarea name="mayMatter" required/></label><label>I do not know yet…<textarea name="uncertainty" required/></label><button className="submit" type="submit"><Send/> Offer this unfinished</button><small>Share only what is yours. Context, consent and credit travel with the spark.</small></form></div>}
+    {composer&&<div className="modal"><form onSubmit={submit}><header><div><p>OFFER A SPARK</p><h2>Share before certainty.</h2></div><button type="button" onClick={()=>setComposer(false)} aria-label="Close"><X/></button></header><p>One observation is enough. You do not need a solution—or an explanation yet.</p><label>Your name (optional)<input name="author" placeholder="You" maxLength={120}/></label><label>I noticed…<textarea name="observation" required maxLength={900} placeholder="Something small that made you stop and think"/></label><details><summary>Add context, if you have it</summary><label>It may matter because… (optional)<textarea name="mayMatter" maxLength={700}/></label><label>I do not know yet… (optional)<textarea name="uncertainty" maxLength={700}/></label></details>{formError&&<p role="alert">{formError}</p>}<button className="submit" type="submit"><Send/> Offer this unfinished</button><small>This prototype stays in this browser. Share only what is yours; ask before carrying someone else’s spark elsewhere.</small></form></div>}
   </main>;
 }

@@ -1,0 +1,23 @@
+import {spawnSync} from 'node:child_process';
+import {readFileSync,writeFileSync,existsSync,mkdirSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+const [round,before,after]=process.argv.slice(2);
+if(!/^R\d\d$/.test(round)||!before||!after) throw Error('Usage: record-round R01 before after');
+const path='contest/ROUND_LEDGER.json';
+const ledger=existsSync(path)?JSON.parse(readFileSync(path,'utf8')):[];
+if(ledger.some(r=>r.round===round))throw Error('Milestone exists; preserve earlier evidence.');
+mkdirSync(`contest/TEST_EVIDENCE/${round}`,{recursive:true});
+const runs=[['unit',['--test','contest/TEST_EVIDENCE/room.test.mjs']],['build',['node_modules/vinext/dist/cli.js','build']]];
+const tests=runs.map(([name,args])=>{
+ const result=spawnSync(process.execPath,args,{encoding:'utf8',env:{...process.env,PATH:process.execPath.replace(/[^\\/]+$/,'')+';'+process.env.PATH}});
+ writeFileSync(`contest/TEST_EVIDENCE/${round}/${name}.txt`,String(result.stdout)+String(result.stderr));
+ return {name,exitCode:result.status,passed:result.status===0};
+});
+const files=['app/spark-workspace.tsx','app/room-input.mjs','app/globals.css'];
+const hashes=Object.fromEntries(files.map(p=>[p,createHash('sha256').update(readFileSync(p)).digest('hex')]));
+const revision=spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).stdout.trim();
+ledger.push({round,time:new Date().toISOString(),parentRevision:revision,sourceHashes:hashes,before,after,tests,status:tests.every(t=>t.passed)?'implemented-tests-passed':'validation-failed',browser:'See browser evidence; not implied by unit/build tests.'});
+writeFileSync(path,JSON.stringify(ledger,null,2)+'\n');
+writeFileSync('contest/ITERATION_REPORT.md','# SPARK iteration report\n\nLocal candidate only. Public baseline: 0eab53e8203de38ea232709614650a6c9c03eff5. No campaign changes published or submitted.\n\n'+ledger.map(r=>`## ${r.round}\n\n${r.time}; parent ${r.parentRevision}\n\nBefore: ${r.before}\n\nAfter: ${r.after}\n\nValidation: ${r.tests.map(t=>t.name+': '+(t.passed?'PASS':'FAIL')).join(', ')}. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/${r.round}/. Browser verification is recorded separately.\n`).join('\n'));
+console.log(JSON.stringify(ledger.at(-1),null,2));
+if(tests.some(t=>!t.passed))process.exitCode=1;
