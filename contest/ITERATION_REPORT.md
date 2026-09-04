@@ -81,3 +81,13 @@ Before: Reload overwrote the room; corrupt storage was unhandled; completed stag
 After: Validated versioned room hydration precedes saving and tool registration; corrupt data left untouched with visible status. Completed stages are keyboard buttons. Roster collapsed and role names readable; local-only single-tab limitations stated.
 
 Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R08/. Browser verification is recorded separately.
+
+## R09
+
+2026-09-04T06:21:22.912Z; parent cad49fec442a11f8a2c60f95d37ea6aafbeba794
+
+Before: Human-growth language was fixed copy or agent-only editing; reported learning was easy to mistake for proven impact.
+
+After: Humans can name a concrete capability intention, separately record observed capability change, or honestly leave it unassessed. No score or automatic success claim. Tool and human return paths share this model.
+
+Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R09/. Browser verification is recorded separately.

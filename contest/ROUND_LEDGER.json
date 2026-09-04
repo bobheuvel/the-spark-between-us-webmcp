@@ -206,5 +206,31 @@
     ],
     "status": "implemented-tests-passed",
     "browser": "See browser evidence; not implied by unit/build tests."
+  },
+  {
+    "round": "R09",
+    "time": "2026-09-04T06:21:22.912Z",
+    "parentRevision": "cad49fec442a11f8a2c60f95d37ea6aafbeba794",
+    "sourceHashes": {
+      "app/spark-workspace.tsx": "8e4abcf709d31be0c6cbf1f38f54cb47570be20ffd33b64619c371b6601b261c",
+      "app/room-input.mjs": "6c12b970511efccfce9c44ffcdec4274a8077707a96b36cf1e276b7e084899af",
+      "app/globals.css": "c89d5f56549e9b37de72ec87e0b63996a4e6f7fe52e6b8b9a1fa4061fe9b0426"
+    },
+    "before": "Human-growth language was fixed copy or agent-only editing; reported learning was easy to mistake for proven impact.",
+    "after": "Humans can name a concrete capability intention, separately record observed capability change, or honestly leave it unassessed. No score or automatic success claim. Tool and human return paths share this model.",
+    "tests": [
+      {
+        "name": "unit",
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "passed": true
+      }
+    ],
+    "status": "implemented-tests-passed",
+    "browser": "See browser evidence; not implied by unit/build tests."
   }
 ]

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { makeSpark,loadDraft,saveDraft,contribute,sourceLink,sourceSummary,withdrawSpark,reviseConsent,validateToolInput,checkRoomMutation,restoreRoom } from '../../app/room-input.mjs';
+import { makeSpark,loadDraft,saveDraft,contribute,sourceLink,sourceSummary,withdrawSpark,reviseConsent,validateToolInput,checkRoomMutation,restoreRoom,nameCapability } from '../../app/room-input.mjs';
 
 test('R01 one unfinished observation is enough', () => {
   const s = makeSpark({observation:'  People hesitate before asking for help.  '}, 'test');
@@ -70,4 +70,9 @@ test('R08 corrupt, oversized or hostile stored state fails closed without throwi
 });
 test('R08 withdrawal remains withdrawn after reload',()=>{
  const result=restoreRoom(JSON.stringify(withdrawSpark(savedRoom())),{});assert.equal(result.room.withdrawn,true);assert.equal(result.room.embers.length,0);
+});
+test('R09 human capability goal stays distinct from reported results',()=>{
+ const room=nameCapability(savedRoom(),'Listen before proposing solutions');assert.equal(room.secondProduct,'Listen before proposing solutions');assert.equal(room.returned,null);
+ const next=contribute({...room,experiment:{question:'test'}},'returned',{learned:'Observed',changed:'Still uncertain',nextSpark:'Try again',credit:'A'},'r');
+ assert.match(next.returned.capability,/Not assessed/);assert.equal(next.secondProduct,room.secondProduct);
 });

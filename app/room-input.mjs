@@ -36,7 +36,7 @@ export function contribute(room,action,input,id) {
  if(action==='returned' && !room.experiment) throw Error('Shape and try a test before returning learning.');
  const fields=Object.fromEntries(contributionFields[action].map(([key,label,max])=>[key,textField(input[key],label,max)]));
  if(action==='ember')return {...room,embers:[...room.embers,{id,kind:'caught',...fields,source:sourceLink(input.source)}]};
- return {...room,[action]:fields};
+ return {...room,[action]:action==='returned'?{...fields,capability:textField(input.capability,'Capability change',700,'Not assessed yet. Learning reported here is not proof of impact.')}:fields};
 }
 export function sourceLink(value) {
  if(value==null || value==='')return '';
@@ -94,11 +94,15 @@ export function restoreRoom(raw,fallback) {
   const members=value.members.map(m=>{if(!['human','agent'].includes(m.kind))throw Error('Invalid role');return {...strings(m,{id:120,name:120,kind:10,role:300}),color:/^#[0-9a-f]{6}$/i.test(m.color)?m.color:'#2475a8',...(m.reportsTo?{reportsTo:textField(m.reportsTo,'Reporting line',120)}:{}),...(m.provider?{provider:textField(m.provider,'Provider',120)}:{})};});
   const embers=value.embers.map(e=>{if(!['caught','question','connection'].includes(e.kind))throw Error('Invalid ember');return {...strings(e,{id:120,author:450,kind:20,text:700}),source:sourceLink(e.source)};});
   const experiment=value.experiment?strings(value.experiment,{question:700,test:900,contact:500,change:700,boundary:700,steward:300}):null;
-  const returned=value.returned?strings(value.returned,{learned:900,changed:900,nextSpark:700,credit:600}):null;
+  const returned=value.returned?{...strings(value.returned,{learned:900,changed:900,nextSpark:700,credit:600}),capability:textField(value.returned.capability,'Capability change',700,'Not assessed yet. Learning reported here is not proof of impact.')}:null;
   if(returned&&!experiment)throw Error('Return without test');
   if(typeof value.secondProduct!=='string'||value.secondProduct.length>800)throw Error('Invalid capability');
   const activity=value.activity.map(a=>strings(a,{tool:100,result:150}));
   const room={members,spark,embers,experiment,returned,secondProduct:value.secondProduct,activity,withdrawn:value.withdrawn===true};
   return {room:room.withdrawn?withdrawSpark(room):room,status:'Restored on this device'};
  } catch { return {room:fallback,status:'Saved room could not be restored. Original saved data was left untouched.'}; }
+}
+export function nameCapability(room,value) {
+ if(room.withdrawn)throw Error('Start a new spark before naming its purpose.');
+ return {...room,secondProduct:textField(value,'What we want to become better at',800)};
 }
