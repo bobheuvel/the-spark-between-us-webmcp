@@ -232,5 +232,31 @@
     ],
     "status": "implemented-tests-passed",
     "browser": "See browser evidence; not implied by unit/build tests."
+  },
+  {
+    "round": "R10",
+    "time": "2026-09-04T06:22:39.542Z",
+    "parentRevision": "0506870cfdee46eba68283619a7274d6af3cb8b1",
+    "sourceHashes": {
+      "app/spark-workspace.tsx": "ac0f20610bfbea1220b4986421ac4df3756531b91ba011052f9c1819fb5b0598",
+      "app/room-input.mjs": "81c1c1d1a144b9e6e2af13e6b3d2f3e8f6529b530e36ff55b6cc416e962c88fd",
+      "app/globals.css": "b9f37e61c6add38b3f0c366c0c1d95f5c9cc26ed91703e9f567f8605a528c9be"
+    },
+    "before": "Pass spark returned a pretend status without a human-readable portable artifact; changing tests could leave a stale result attached.",
+    "after": "Shared human/agent handoff builder opens visible review, preserves full context/credit/boundary and downloads only on human click. No send claim. Completed test replacement blocked. Primary contribution controls moved above roster; metadata readable.",
+    "tests": [
+      {
+        "name": "unit",
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "passed": true
+      }
+    ],
+    "status": "implemented-tests-passed",
+    "browser": "See browser evidence; not implied by unit/build tests."
   }
 ]

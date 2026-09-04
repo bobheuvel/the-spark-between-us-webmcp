@@ -91,3 +91,13 @@ Before: Human-growth language was fixed copy or agent-only editing; reported lea
 After: Humans can name a concrete capability intention, separately record observed capability change, or honestly leave it unassessed. No score or automatic success claim. Tool and human return paths share this model.
 
 Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R09/. Browser verification is recorded separately.
+
+## R10
+
+2026-09-04T06:22:39.542Z; parent 0506870cfdee46eba68283619a7274d6af3cb8b1
+
+Before: Pass spark returned a pretend status without a human-readable portable artifact; changing tests could leave a stale result attached.
+
+After: Shared human/agent handoff builder opens visible review, preserves full context/credit/boundary and downloads only on human click. No send claim. Completed test replacement blocked. Primary contribution controls moved above roster; metadata readable.
+
+Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R10/. Browser verification is recorded separately.

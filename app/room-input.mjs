@@ -36,6 +36,7 @@ export function contribute(room,action,input,id) {
  if(action==='returned' && !room.experiment) throw Error('Shape and try a test before returning learning.');
  const fields=Object.fromEntries(contributionFields[action].map(([key,label,max])=>[key,textField(input[key],label,max)]));
  if(action==='ember')return {...room,embers:[...room.embers,{id,kind:'caught',...fields,source:sourceLink(input.source)}]};
+ if(action==='experiment'&&room.returned)throw Error('This test already has a return. Start a new spark for a different test.');
  return {...room,[action]:action==='returned'?{...fields,capability:textField(input.capability,'Capability change',700,'Not assessed yet. Learning reported here is not proof of impact.')}:fields};
 }
 export function sourceLink(value) {
@@ -78,6 +79,7 @@ export function checkRoomMutation(room,name,input) {
  if(input.expectedSparkId && input.expectedSparkId!==room.spark.id)throw Error('STALE_SPARK: read the room again.');
  if(name==='shape_honest_test'&&!room.embers.length)throw Error('Add a perspective before shaping a test.');
  if(name==='return_value'&&!room.experiment)throw Error('Shape and try a test before returning learning.');
+ if(name==='shape_honest_test'&&room.returned)throw Error('This test has a return. Start a new spark for a different test.');
  if(room.embers.length>=100 && ['add_ember','invite_agent'].includes(name))throw Error('Room contribution limit reached.');
  if(room.members.length>=30 && name==='join_room')throw Error('Room participant limit reached.');
 }
@@ -105,4 +107,8 @@ export function restoreRoom(raw,fallback) {
 export function nameCapability(room,value) {
  if(room.withdrawn)throw Error('Start a new spark before naming its purpose.');
  return {...room,secondProduct:textField(value,'What we want to become better at',800)};
+}
+export function buildHandoff(room,input) {
+ if(room.withdrawn)throw Error('Withdrawn sparks cannot be handed on.');
+ return {format:'spark-handoff',version:1,status:'DRAFT_NOT_SENT',to:textField(input.to,'Recipient or room',200),context:textField(input.context,'Why this may matter to them',700),permission:room.spark.consent,credit:room.spark.credit,reviewRequired:true,room:JSON.parse(JSON.stringify(room)),note:'A portable local snapshot, not a live shared room. Permission is stated by the contributor, not independently verified. Ask before sharing; the receiver may decline.'};
 }

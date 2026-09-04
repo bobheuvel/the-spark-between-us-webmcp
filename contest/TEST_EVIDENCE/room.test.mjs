@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { makeSpark,loadDraft,saveDraft,contribute,sourceLink,sourceSummary,withdrawSpark,reviseConsent,validateToolInput,checkRoomMutation,restoreRoom,nameCapability } from '../../app/room-input.mjs';
+import { makeSpark,loadDraft,saveDraft,contribute,sourceLink,sourceSummary,withdrawSpark,reviseConsent,validateToolInput,checkRoomMutation,restoreRoom,nameCapability,buildHandoff } from '../../app/room-input.mjs';
 
 test('R01 one unfinished observation is enough', () => {
   const s = makeSpark({observation:'  People hesitate before asking for help.  '}, 'test');
@@ -75,4 +75,14 @@ test('R09 human capability goal stays distinct from reported results',()=>{
  const room=nameCapability(savedRoom(),'Listen before proposing solutions');assert.equal(room.secondProduct,'Listen before proposing solutions');assert.equal(room.returned,null);
  const next=contribute({...room,experiment:{question:'test'}},'returned',{learned:'Observed',changed:'Still uncertain',nextSpark:'Try again',credit:'A'},'r');
  assert.match(next.returned.capability,/Not assessed/);assert.equal(next.secondProduct,room.secondProduct);
+});
+test('R10 handoff preserves human boundary and credit, not agent-supplied replacements',()=>{
+ const room=savedRoom();const handoff=buildHandoff(room,{to:'A room',context:'A perspective',permission:'public',credit:'stolen'});
+ assert.equal(handoff.permission,room.spark.consent);assert.equal(handoff.credit,'You');assert.equal(handoff.status,'DRAFT_NOT_SENT');
+ room.spark.observation='changed';assert.equal(handoff.room.spark.observation,'Saved observation');
+ assert.throws(()=>buildHandoff(withdrawSpark(room),{to:'A',context:'B'}),/Withdrawn/);
+});
+test('R10 completed return cannot be silently attached to a replacement test',()=>{
+ const room={...savedRoom(),embers:[{}],experiment:{},returned:{learned:'Old test'}};
+ assert.throws(()=>checkRoomMutation(room,'shape_honest_test',{}),/return/);
 });
