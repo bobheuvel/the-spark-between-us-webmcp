@@ -41,3 +41,13 @@ Before: Attribution did not include source links; earlier embers disappeared fro
 After: Persistent expandable context shows every named contribution and optional safe source link at every stage. Exact-URL repeats collapse in distinct URL count with explicit no truth/independence verification claim.
 
 Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R04/. Browser verification is recorded separately.
+
+## R05
+
+2026-09-04T06:13:50.196Z; parent 3d4aec5e5fd7a51f517c3788f33bab0e8256ba93
+
+Before: Core room followed a large hero; tiny labels and handmade modal lacked dialog semantics/focus containment.
+
+After: Working room now precedes story; 16px body/14px routine labels, visible focus and 44px controls, mobile wrapping and skip link. Installed Dialog primitive supplies modal semantics and Escape/focus behavior.
+
+Validation: unit: PASS, build: PASS. Exact source hashes: ROUND_LEDGER.json. Logs: TEST_EVIDENCE/R05/. Browser verification is recorded separately.

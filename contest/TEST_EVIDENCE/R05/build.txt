@@ -1,0 +1,46 @@
+
+  vinext build  (Vite 8.0.13)
+
+[1/5] analyze client references...
+[2Ktransforming...✓ 227 modules transformed.
+rendering chunks...
+✓ built in 2.07s
+[2/5] analyze server references...
+[2Ktransforming...✓ 251 modules transformed.
+rendering chunks...
+✓ built in 979ms
+[3/5] build rsc environment...
+[2Ktransforming...✓ 224 modules transformed.
+rendering chunks...
+computing gzip size...
+✓ built in 1.04s
+[4/5] build client environment...
+[2Ktransforming...✓ 2050 modules transformed.
+rendering chunks...
+computing gzip size...
+✓ built in 5.77s
+[5/5] build ssr environment...
+[2Ktransforming...✓ 259 modules transformed.
+rendering chunks...
+computing gzip size...
+✓ built in 2.15s
+[0m
+  Route (app)
+  ─ ? /
+
+  ? Unknown
+
+  ? Some routes could not be classified. vinext currently uses static analysis
+    and cannot detect dynamic API usage (headers(), cookies(), etc.) at build time.
+    Automatic classification will be improved in a future release.
+
+  Build complete. Run `vinext start` to start the production server.
+
+[33m[PLUGIN_TIMINGS] [0mYour build spent significant time in plugins. Here is a breakdown:
+  - vinext:middleware-server-only (22%)
+  - vinext:css-data-url (20%)
+  - alias (16%)
+  - rsc:virtual-client-package (12%)
+  - vinext:og-inline-fetch-assets (12%)
+See https://rolldown.rs/options/checks#plugintimings for more details.
+

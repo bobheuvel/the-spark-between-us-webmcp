@@ -102,5 +102,31 @@
     ],
     "status": "implemented-tests-passed",
     "browser": "See browser evidence; not implied by unit/build tests."
+  },
+  {
+    "round": "R05",
+    "time": "2026-09-04T06:13:50.196Z",
+    "parentRevision": "3d4aec5e5fd7a51f517c3788f33bab0e8256ba93",
+    "sourceHashes": {
+      "app/spark-workspace.tsx": "539a357fca9f79911dfb6d6070017ee8ed9b9b2d0f107e98c7d29298967a6db0",
+      "app/room-input.mjs": "53dd00b912aed9f15415397b4461ef8056d2e8e6f13748b08b309d5be3757467",
+      "app/globals.css": "e77cc9e85e9b3fbd3b52c414103cc259b3f903f9bb16614f5ff275f56062b92f"
+    },
+    "before": "Core room followed a large hero; tiny labels and handmade modal lacked dialog semantics/focus containment.",
+    "after": "Working room now precedes story; 16px body/14px routine labels, visible focus and 44px controls, mobile wrapping and skip link. Installed Dialog primitive supplies modal semantics and Escape/focus behavior.",
+    "tests": [
+      {
+        "name": "unit",
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "passed": true
+      }
+    ],
+    "status": "implemented-tests-passed",
+    "browser": "See browser evidence; not implied by unit/build tests."
   }
 ]

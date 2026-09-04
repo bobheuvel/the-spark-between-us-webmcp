@@ -1,0 +1,17 @@
+✔ R01 one unfinished observation is enough (4.2062ms)
+✔ R01 reject blank, wrong type and oversized observations (3.1505ms)
+✔ R01 retain attribution and optional detail (0.6912ms)
+✔ R02 recover a small draft and discard unknown fields (6.9418ms)
+✔ R02 corrupt or unavailable storage does not crash contribution (2.176ms)
+✔ R03 real human contribution retains previous state and attribution (0.7884ms)
+✔ R03 no fabricated return before a real test is shaped (0.8044ms)
+✔ R04 repeat citations are not independent support (0.611ms)
+✔ R04 source URLs reject script and credential payloads (0.6069ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 568.1536
