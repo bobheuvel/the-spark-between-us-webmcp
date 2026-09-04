@@ -24,5 +24,31 @@
     ],
     "status": "implemented-tests-passed",
     "browser": "See browser evidence; not implied by unit/build tests."
+  },
+  {
+    "round": "R02",
+    "time": "2026-09-04T06:08:56.153Z",
+    "parentRevision": "99eb4fff0f76ceda14cd692a9a1e89d78d880eb5",
+    "sourceHashes": {
+      "app/spark-workspace.tsx": "ef3eb99eaef7f53481d156fbf3c0cea5ab4197e9e496b32d67ee203cdcabc210",
+      "app/room-input.mjs": "6f22c7426f58b6e2e2c15f7c6e50982e1c8e02c7ebc06dd38712fa9736e29697",
+      "app/globals.css": "b4cffe5f4d13bc816694169a1a461b8e9b27ea94e9bb5e387d05505f61376808"
+    },
+    "before": "Closing the composer lost an unfinished thought; all work had to be done in one sitting.",
+    "after": "Composer autosaves bounded local draft on change and restores after reopening/reload; low-pressure copy and truthful storage-failure feedback. No claim of idea-theft prevention.",
+    "tests": [
+      {
+        "name": "unit",
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "passed": true
+      }
+    ],
+    "status": "implemented-tests-passed",
+    "browser": "See browser evidence; not implied by unit/build tests."
   }
 ]

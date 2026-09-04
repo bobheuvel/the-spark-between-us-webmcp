@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { makeSpark } from '../../app/room-input.mjs';
+import { makeSpark,loadDraft,saveDraft } from '../../app/room-input.mjs';
 
 test('R01 one unfinished observation is enough', () => {
   const s = makeSpark({observation:'  People hesitate before asking for help.  '}, 'test');
@@ -13,4 +13,12 @@ test('R01 reject blank, wrong type and oversized observations', () => {
 test('R01 retain attribution and optional detail', () => {
   const s=makeSpark({author:'Mina',observation:'A question',mayMatter:'Connection',uncertainty:'Maybe'}, 'test');
   assert.equal(s.credit,'Mina'); assert.equal(s.uncertainty,'Maybe');
+});
+test('R02 recover a small draft and discard unknown fields',()=>{
+ const storage={getItem:()=>JSON.stringify({observation:'Half a thought',injected:'no'})};
+ assert.deepEqual(loadDraft(storage),{observation:'Half a thought'});
+});
+test('R02 corrupt or unavailable storage does not crash contribution',()=>{
+ assert.deepEqual(loadDraft({getItem:()=>'{bad'}),{});
+ assert.equal(saveDraft({setItem(){throw Error('denied')}},{}),false);
 });

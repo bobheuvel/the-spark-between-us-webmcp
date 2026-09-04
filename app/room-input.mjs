@@ -14,3 +14,13 @@ export function makeSpark(input, id) {
     uncertainty: textField(input.uncertainty, 'Uncertainty', 700, 'This is unfinished. Questions and different perspectives are welcome.'),
     consent: 'Keep context and ask before taking it elsewhere.', credit: author };
 }
+export function loadDraft(storage) {
+  try {
+    const value=JSON.parse(storage.getItem('spark-draft-v1') || '{}');
+    if(!value || typeof value!=='object' || Array.isArray(value)) return {};
+    return Object.fromEntries(['author','observation','mayMatter','uncertainty'].filter(k=>typeof value[k]==='string').map(k=>[k,value[k].slice(0,k==='author'?120:k==='observation'?900:700)]));
+  } catch { return {}; }
+}
+export function saveDraft(storage,draft) {
+  try { storage.setItem('spark-draft-v1',JSON.stringify(draft)); return true; } catch { return false; }
+}

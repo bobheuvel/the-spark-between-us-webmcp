@@ -1,0 +1,13 @@
+✔ R01 one unfinished observation is enough (0.7464ms)
+✔ R01 reject blank, wrong type and oversized observations (1.0848ms)
+✔ R01 retain attribution and optional detail (0.2721ms)
+✔ R02 recover a small draft and discard unknown fields (3.978ms)
+✔ R02 corrupt or unavailable storage does not crash contribution (1.9039ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 151.2784
