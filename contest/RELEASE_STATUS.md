@@ -1,13 +1,13 @@
 # SPARK release status
 
-As of 2026-09-04 ~08:33 Europe/Amsterdam. Candidate is local only; no final contest submission has been made by this task.
+As of 2026-09-04 ~08:48 Europe/Amsterdam. Candidate is local only; no final contest submission has been made by this task.
 
 ## Three different states
 
 | State | Evidence |
 |---|---|
 | Published baseline | Source 0eab53e8203de38ea232709614650a6c9c03eff5. Sites deployment appgdep_6a99f10080648191b08a80acddc17bdd read-only verified succeeded, completion 2026-09-03T22:17:26.906493Z. https://spark-evidence-before-action.bobiaan.chatgpt.site |
-| Local candidate | Branch campaign/spark-ten-rounds. R01–R10 commits and source hashes retained. Latest exact source hashes in TEST_EVIDENCE/release-2026-09-04T06-29-31-530Z/result.json. Not pushed or deployed. |
+| Local candidate | Branch campaign/spark-ten-rounds. R01–R10 commits and source hashes retained. Latest exact source hashes in TEST_EVIDENCE/release-2026-09-04T06-45-22-430Z/result.json; all four checks passed. That elevated run could not resolve git on its PATH, so parentRevision is blank; independently checked parent was 3ab4dfe60f14310a57468945216ff2e0c52ed38c. Not pushed or deployed. |
 | Submitted entry | NOT VERIFIED / no submission observed. Last Devpost page showed registration success and empty project list. Bob must create/fill/submit the actual entry and retain confirmation. |
 
 Public repository: https://github.com/bobheuvel/the-spark-between-us-webmcp . No campaign push performed.
@@ -16,11 +16,12 @@ Existing public video: https://youtu.be/2IwWWUBe5_s . Previous verification: 2:5
 ## Candidate validation
 
 - Ten real sequential code rounds, each with tests/build rerun and exact hashes: ROUND_LEDGER.json.
-- Release regression: 20 unit tests, TypeScript and production build PASS in timestamped release logs.
+- Release regression: 20 unit tests, TypeScript, scoped lint and production build PASS in release-2026-09-04T06-45-22-430Z, including final CSS-only receipt layout fix. The 06-44 rerun retained a build-output EPERM failure while preview held the output; preview was stopped before the successful approved retry.
 - Actual in-app browser: all ten WebMCP tools discovered/invoked; all ten reject unknown fields; stale ID and unsafe source rejected. Valid changed tools retested as documented in R10/browser.md.
 - Human spark → ember → test → return form flow PASS using synthetic records and keyboard activation.
 - Draft and complete-room reload PASS; completed-stage keyboard revisiting PASS; modal focus/Escape/focus return PASS; 390x844 layout inspected.
-- Clean dependency installation from fresh checkout: pending separate check, not implied by existing node_modules build.
+- Clean frozen-lockfile installation and build from archive 3ab4dfe PASS after approved dependency-access retry. Initial offline-cache failure retained, with precise follow-up in TEST_EVIDENCE/clean-install-1788503525943/followup.md. Later source refinements use unchanged dependencies and separate release checks.
+- Final production runtime: all ten actual tools accepted valid calls; duplicate draft overwrite rejected; visible data-URI handoff decoded and matched original credit, consent and learning trail. See TEST_EVIDENCE/production-final.md. Not a claim that the public deployment contains these changes.
 - Browser destructive withdrawal, denied storage, full screen-reader/Tab-only audit, 200% text-only enlargement and separate Chrome compatibility: NOT VERIFIED. Domain tests cover withdrawal/legacy cleanup and corrupt storage. These are not security certifications.
 
 ## Scope and rights

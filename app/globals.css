@@ -474,9 +474,9 @@ textarea {
   border-bottom: 1px solid var(--line);
 }
 .room-head p:first-child,
-.embers label,
-.experiment label,
-.returned label {
+.embers .section-kicker,
+.experiment .section-kicker,
+.returned .section-kicker {
   font-size: 8px;
   letter-spacing: 0.15em;
   font-weight: 800;
@@ -1206,7 +1206,7 @@ textarea {
     serif;
   margin: 35px 0 26px;
 }
-.companion-card label {
+.companion-card .companion-field {
   display: grid;
   gap: 7px;
   padding: 15px 0;
@@ -1215,7 +1215,7 @@ textarea {
   letter-spacing: 0.13em;
   color: #8fb3c8;
 }
-.companion-card label strong {
+.companion-card .companion-field strong {
   font:
     500 14px/1.35 Georgia,
     serif;
@@ -1709,6 +1709,7 @@ textarea {
   top: 10px;
 }
 .spark-page .storage-status {
+  display: block;
   padding: 12px 24px;
   margin: 0;
   background: #edf4f7;
@@ -1735,6 +1736,15 @@ textarea {
 .spark-page .steps > button.active {
   border-color: #2475a8;
   color: #175a84;
+  background: #eaf3f8;
+}
+.spark-page .steps > button.active > span {
+  background: transparent;
+  color: inherit;
+}
+.spark-page .topbar nav a,
+.spark-page .topbar nav button {
+  font-size: 0.875rem;
 }
 .spark-page .steps > button small {
   display: block;
@@ -1750,7 +1760,7 @@ textarea {
 .spark-page .second-product span,
 .spark-page .room-head > div > p,
 .spark-page .card-meta small,
-.spark-page .catch-area label,
+.spark-page .catch-area .section-kicker,
 .spark-page .returned > div > span,
 .spark-page .spark-card footer,
 .spark-page .room-action > div > span {

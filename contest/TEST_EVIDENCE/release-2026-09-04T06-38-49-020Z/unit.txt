@@ -1,0 +1,28 @@
+✔ R01 one unfinished observation is enough (2.3582ms)
+✔ R01 reject blank, wrong type and oversized observations (0.4879ms)
+✔ R01 retain attribution and optional detail (0.1922ms)
+✔ R02 recover a small draft and discard unknown fields (1.9239ms)
+✔ R02 corrupt or unavailable storage does not crash contribution (1.0927ms)
+✔ R03 real human contribution retains previous state and attribution (1.4536ms)
+✔ R03 no fabricated return before a real test is shaped (1.1405ms)
+✔ R04 repeat citations are not independent support (0.6546ms)
+✔ R04 source URLs reject script and credential payloads (0.5642ms)
+✔ R06 withdrawal removes content and derived contributions locally (0.9253ms)
+✔ R06 consent revision preserves the spark and credit (0.3566ms)
+✔ R07 runtime schema rejects unknown/prototype keys, enum, type and size attacks (1.0169ms)
+✔ R07 withdrawn, stale and out-of-sequence mutations fail before state updates (0.9075ms)
+✔ R08 reload restores validated room without dropping attribution (0.8393ms)
+✔ R08 corrupt, oversized or hostile stored state fails closed without throwing (2.1802ms)
+✔ R08 withdrawal remains withdrawn after reload (0.4517ms)
+✔ R09 human capability goal stays distinct from reported results (0.4886ms)
+✔ R10 handoff preserves human boundary and credit, not agent-supplied replacements (0.5302ms)
+✔ R10 completed return cannot be silently attached to a replacement test (0.4174ms)
+✔ Release regression: withdrawal removes legacy copy and draft, reports denied cleanup (0.7385ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 235.9535

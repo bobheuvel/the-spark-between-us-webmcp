@@ -1,4 +1,4 @@
-# SPARK morning brief — interim
+# SPARK morning brief
 
 ## Update after the ten implementation rounds (~08:33 Amsterdam)
 
@@ -16,7 +16,7 @@ All ten sequential implementation milestones now exist; this update preserves th
 | Human growth | Fixed slogan → editable capability intention, optional observed change, unassessed allowed | Distinguishes value from more output | R09 tests and R10 browser human edit |
 | Portable spark | Handoff status only → inspect/download full local snapshot; stale handoff invalidates after edits | A practical, consent-aware next step beyond the page | R10/browser.md and release tests |
 
-Release checks: 20 unit tests, TypeScript and build pass; all ten actual browser tools accept valid calls and reject unknown fields. Competitor comparison covers Are.na, Loomio and Kialo Edu from primary documentation. No real-user study or proven growth effect is claimed.
+Release checks: 20 unit tests, TypeScript, scoped lint and build pass. All ten actual browser tools accept valid calls and reject unknown fields in documented dev checks; all ten valid paths also passed on the production runtime. Clean frozen-lockfile install/build at 3ab4dfe passed after an approved access retry. Final portable download payload was decoded and verified. Competitor comparison covers Are.na, Loomio and Kialo Edu from primary documentation. No real-user study or proven growth effect is claimed. Final source hashes and any intervening failed checks remain in timestamped release evidence.
 
 Immediate decisions for Bob: candidate publishing approval; matching video; Devpost final entry and declarations. Current public video/site predate these changes. Candidate demo script is ready, not a newly rendered video. Full remaining risks and freeze timing are in RELEASE_STATUS.md.
 

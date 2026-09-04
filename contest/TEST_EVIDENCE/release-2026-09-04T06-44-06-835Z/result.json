@@ -1,0 +1,37 @@
+{
+  "time": "2026-09-04T06:44:52.946Z",
+  "parentRevision": "3ab4dfe60f14310a57468945216ff2e0c52ed38c",
+  "results": [
+    {
+      "name": "unit",
+      "exitCode": 0
+    },
+    {
+      "name": "types",
+      "exitCode": 0
+    },
+    {
+      "name": "lint",
+      "exitCode": 0
+    },
+    {
+      "name": "build",
+      "exitCode": 1
+    }
+  ],
+  "hashes": {
+    "app/spark-workspace.tsx": "e4db5526a77b057331db83a8b6440273d8a6a32ebfb836d377c85bd01a80478d",
+    "app/room-input.mjs": "e536cb29f264f2f8a5761fd8e1cdf11550127d77d2873e1ad2d24b25ab155e0f",
+    "app/globals.css": "9f4c8b452fb8d172abe7dc7f66ceeba538b870404a019d79ecbdd13b8faaedcb",
+    "app/layout.tsx": "fb2f508dbb6d867b36d8a13dbb54e19c3afb58df07974bc474150d5849716810",
+    "package.json": "4995cbbd54b3038468bb9393a0413ffcd6927ce1a040c53e23544c7ec71f68dd",
+    "pnpm-lock.yaml": "9779457228613d12bf6efa715c3a28843c14e40cef61c964201ba2df322208db",
+    "LICENSE": "db6a3d83dc920e2abd886358b2f46c064913fcef9f83d5e18d57880293482911",
+    "public/og.png": "9a7a882e6916a43a8adb66dc5073aeff8b9912d7f013d077413e0762f37d0e36",
+    "public/favicon.svg": "e6d2e59b7b5bbb0342e0fb496dfc262decbfe4426bbb7b047aec8d467d1dc6f7",
+    "public/video-cards.html": "fc8e5a734dcac132ebda44b277813983fadd6583a8155d138328b6ea91a23200",
+    "public/spark-companion-extension.zip": "cf4db9a3b4f4384f60d2a29677e5b171b8850e09b361dee094d5d6b6abac8376"
+  },
+  "licenseScope": "Direct installed dependency metadata only; not a full transitive legal clearance.",
+  "output": "contest/TEST_EVIDENCE/release-2026-09-04T06-44-06-835Z"
+}

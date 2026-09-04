@@ -3,7 +3,7 @@ import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 const stamp=new Date().toISOString().replace(/[:.]/g,'-');
 const out=`contest/TEST_EVIDENCE/release-${stamp}`;mkdirSync(out,{recursive:true});
-const checks=[['unit',['--test','contest/TEST_EVIDENCE/room.test.mjs']],['types',['node_modules/typescript/bin/tsc','--noEmit','--incremental','false']],['build',['node_modules/vinext/dist/cli.js','build']]];
+const checks=[['unit',['--test','contest/TEST_EVIDENCE/room.test.mjs']],['types',['node_modules/typescript/bin/tsc','--noEmit','--incremental','false']],['lint',['node_modules/oxlint/bin/oxlint','app/spark-workspace.tsx','app/room-input.mjs']],['build',['node_modules/vinext/dist/cli.js','build']]];
 const results=checks.map(([name,args])=>{const r=spawnSync(process.execPath,args,{encoding:'utf8'});writeFileSync(`${out}/${name}.txt`,String(r.stdout)+String(r.stderr));return {name,exitCode:r.status};});
 const pkg=JSON.parse(readFileSync('package.json','utf8'));
 const dependencies=Object.entries({...pkg.dependencies,...pkg.devDependencies}).map(([name,declared])=>{try{const p=JSON.parse(readFileSync(`node_modules/${name}/package.json`,'utf8'));return {name,declared,installed:p.version,license:p.license||'NOT DECLARED',repository:p.repository||null};}catch{return {name,declared,status:'MANIFEST NOT READ'};}});

@@ -1,0 +1,362 @@
+[
+  {
+    "name": "react",
+    "declared": "19.2.6",
+    "installed": "19.2.6",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/facebook/react.git",
+      "directory": "packages/react"
+    }
+  },
+  {
+    "name": "react-dom",
+    "declared": "19.2.6",
+    "installed": "19.2.6",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/facebook/react.git",
+      "directory": "packages/react-dom"
+    }
+  },
+  {
+    "name": "react-server-dom-webpack",
+    "declared": "19.2.6",
+    "installed": "19.2.6",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/facebook/react.git",
+      "directory": "packages/react-server-dom-webpack"
+    }
+  },
+  {
+    "name": "vinext",
+    "declared": "1.0.0-beta.5",
+    "installed": "1.0.0-beta.5",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/cloudflare/vinext.git"
+    }
+  },
+  {
+    "name": "@base-ui/react",
+    "declared": "1.7.0",
+    "installed": "1.7.0",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/mui/base-ui.git",
+      "directory": "packages/react"
+    }
+  },
+  {
+    "name": "@shadcn/react",
+    "declared": "0.3.0",
+    "installed": "0.3.0",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/shadcn-ui/ui.git",
+      "directory": "packages/react"
+    }
+  },
+  {
+    "name": "class-variance-authority",
+    "declared": "0.7.1",
+    "installed": "0.7.1",
+    "license": "Apache-2.0",
+    "repository": "https://github.com/joe-bell/cva.git"
+  },
+  {
+    "name": "clsx",
+    "declared": "2.1.1",
+    "installed": "2.1.1",
+    "license": "MIT",
+    "repository": "lukeed/clsx"
+  },
+  {
+    "name": "cmdk",
+    "declared": "1.1.1",
+    "installed": "1.1.1",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/pacocoursey/cmdk.git",
+      "directory": "cmdk"
+    }
+  },
+  {
+    "name": "date-fns",
+    "declared": "4.1.0",
+    "installed": "4.1.0",
+    "license": "MIT",
+    "repository": "https://github.com/date-fns/date-fns"
+  },
+  {
+    "name": "embla-carousel-react",
+    "declared": "8.5.2",
+    "installed": "8.5.2",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/davidjerleke/embla-carousel"
+    }
+  },
+  {
+    "name": "input-otp",
+    "declared": "1.4.2",
+    "installed": "1.4.2",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/guilhermerodz/input-otp.git",
+      "directory": "packages/input-otp"
+    }
+  },
+  {
+    "name": "lucide-react",
+    "declared": "1.31.0",
+    "installed": "1.31.0",
+    "license": "ISC",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/lucide-icons/lucide.git",
+      "directory": "packages/lucide-react"
+    }
+  },
+  {
+    "name": "react-day-picker",
+    "declared": "9.8.1",
+    "installed": "9.8.1",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/gpbl/react-day-picker"
+    }
+  },
+  {
+    "name": "react-resizable-panels",
+    "declared": "4.5.8",
+    "installed": "4.5.8",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/bvaughn/react-resizable-panels.git"
+    }
+  },
+  {
+    "name": "recharts",
+    "declared": "3.8.0",
+    "installed": "3.8.0",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/recharts/recharts.git"
+    }
+  },
+  {
+    "name": "shadcn",
+    "declared": "4.18.0",
+    "installed": "4.18.0",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/shadcn-ui/ui.git",
+      "directory": "packages/shadcn"
+    }
+  },
+  {
+    "name": "tailwind-merge",
+    "declared": "3.6.0",
+    "installed": "3.6.0",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dcastil/tailwind-merge.git"
+    }
+  },
+  {
+    "name": "tw-animate-css",
+    "declared": "1.4.0",
+    "installed": "1.4.0",
+    "license": "MIT",
+    "repository": "Wombosvideo/tw-animate-css"
+  },
+  {
+    "name": "@cloudflare/vite-plugin",
+    "declared": "1.37.1",
+    "installed": "1.37.1",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/cloudflare/workers-sdk.git",
+      "directory": "packages/vite-plugin-cloudflare"
+    }
+  },
+  {
+    "name": "@cloudflare/workers-types",
+    "declared": "4.20260515.1",
+    "installed": "4.20260515.1",
+    "license": "MIT OR Apache-2.0",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/cloudflare/workerd"
+    }
+  },
+  {
+    "name": "@openai/sites-vite-plugin",
+    "declared": "0.2.0",
+    "installed": "0.2.0",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/openai/sites.git",
+      "directory": "packages/sites-vite-plugin"
+    }
+  },
+  {
+    "name": "@tailwindcss/postcss",
+    "declared": "4.2.1",
+    "installed": "4.2.1",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/tailwindlabs/tailwindcss.git",
+      "directory": "packages/@tailwindcss-postcss"
+    }
+  },
+  {
+    "name": "@types/node",
+    "declared": "22.19.19",
+    "installed": "22.19.19",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "directory": "types/node"
+    }
+  },
+  {
+    "name": "@types/react",
+    "declared": "19.2.14",
+    "installed": "19.2.14",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "directory": "types/react"
+    }
+  },
+  {
+    "name": "@types/react-dom",
+    "declared": "19.2.3",
+    "installed": "19.2.3",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "directory": "types/react-dom"
+    }
+  },
+  {
+    "name": "@vitejs/plugin-react",
+    "declared": "6.0.2",
+    "installed": "6.0.2",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/vitejs/vite-plugin-react.git",
+      "directory": "packages/plugin-react"
+    }
+  },
+  {
+    "name": "@vitejs/plugin-rsc",
+    "declared": "0.5.26",
+    "installed": "0.5.26",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/vitejs/vite-plugin-react.git",
+      "directory": "packages/plugin-rsc"
+    }
+  },
+  {
+    "name": "oxfmt",
+    "declared": "0.61.0",
+    "installed": "0.61.0",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/oxc-project/oxc",
+      "directory": "npm/oxfmt"
+    }
+  },
+  {
+    "name": "oxlint",
+    "declared": "1.76.0",
+    "installed": "1.76.0",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/oxc-project/oxc",
+      "directory": "npm/oxlint"
+    }
+  },
+  {
+    "name": "oxlint-tsgolint",
+    "declared": "7.0.2001",
+    "installed": "7.0.2001",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "github:oxc-project/tsgolint"
+    }
+  },
+  {
+    "name": "tailwindcss",
+    "declared": "4.2.1",
+    "installed": "4.2.1",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/tailwindlabs/tailwindcss.git",
+      "directory": "packages/tailwindcss"
+    }
+  },
+  {
+    "name": "typescript",
+    "declared": "5.9.3",
+    "installed": "5.9.3",
+    "license": "Apache-2.0",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/microsoft/TypeScript.git"
+    }
+  },
+  {
+    "name": "vite",
+    "declared": "8.0.13",
+    "installed": "8.0.13",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/vitejs/vite.git",
+      "directory": "packages/vite"
+    }
+  },
+  {
+    "name": "wrangler",
+    "declared": "4.92.0",
+    "installed": "4.92.0",
+    "license": "MIT OR Apache-2.0",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/cloudflare/workers-sdk.git",
+      "directory": "packages/wrangler"
+    }
+  }
+]

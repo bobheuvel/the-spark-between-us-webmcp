@@ -1,6 +1,12 @@
 'use client';
 
-import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   Dialog,
   DialogContent,
@@ -42,7 +48,6 @@ import {
   Sprout,
   TestTube2,
   UserRound,
-  X,
 } from 'lucide-react';
 
 type Member = {
@@ -99,9 +104,9 @@ type Room = {
 type Tool = {
   name: string;
   description: string;
-  inputSchema: Record<string, unknown>;
+  inputSchema: ReturnType<typeof schema>;
   annotations?: { readOnlyHint?: boolean; untrustedContentHint?: boolean };
-  execute: (input: any) => Promise<string>;
+  execute: (input: Record<string, string>) => Promise<string>;
 };
 type ModelContext = {
   registerTool: (
@@ -208,24 +213,11 @@ export default function SparkWorkspace() {
   const [handoff, setHandoff] = useState<ReturnType<
     typeof buildHandoff
   > | null>(null);
-  const [exportUrl, setExportUrl] = useState('');
-  useEffect(() => {
-    if (!handoff) {
-      setExportUrl('');
-      return;
-    }
-    const url = URL.createObjectURL(
-      new Blob([JSON.stringify(handoff, null, 2)], {
-        type: 'application/json',
-      }),
-    );
-    setExportUrl(url);
-    return () => URL.revokeObjectURL(url);
-  }, [handoff]);
-  useEffect(() => {
-    setDraft(loadDraft(deviceStorage()));
-  }, []);
-  const keepDraft = (e: FormEvent<HTMLFormElement>) => {
+  const exportUrl = handoff
+    ? 'data:application/json;charset=utf-8,' +
+      encodeURIComponent(JSON.stringify(handoff, null, 2))
+    : '';
+  const keepDraft = (e: SyntheticEvent<HTMLFormElement>) => {
     const next = Object.fromEntries(new FormData(e.currentTarget)) as Record<
       string,
       string
@@ -235,39 +227,49 @@ export default function SparkWorkspace() {
   };
   const ref = useRef(room);
   useEffect(() => {
-    try {
-      const restored = restoreRoom(
-        localStorage.getItem('spark-room-v4') ||
-          localStorage.getItem('spark-room-v3'),
-        initial(),
-      );
-      storageBlocked.current = restored.status.includes('could not');
-      ref.current = restored.room as Room;
-      setRoom(restored.room as Room);
-      setStorageStatus(restored.status);
-    } catch {
-      storageBlocked.current = true;
-      setStorageStatus(
-        'Storage unavailable. This room lasts only while the page is open.',
-      );
-    }
-    setReady(true);
+    // Read browser-owned data after hydration, with cancellation on unmount.
+    const frame = requestAnimationFrame(() => {
+      setDraft(loadDraft(deviceStorage()));
+      try {
+        const restored = restoreRoom(
+          localStorage.getItem('spark-room-v4') ||
+            localStorage.getItem('spark-room-v3'),
+          initial(),
+        );
+        storageBlocked.current = restored.status.includes('could not');
+        ref.current = restored.room as Room;
+        setRoom(restored.room as Room);
+        setStorageStatus(restored.status);
+      } catch {
+        storageBlocked.current = true;
+        setStorageStatus(
+          'Storage unavailable. This room lasts only while the page is open.',
+        );
+      }
+      setReady(true);
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
   useEffect(() => {
     if (!ready || storageBlocked.current) return;
+    let active = true;
+    let receipt =
+      'Saved on this device · use one tab to avoid conflicting edits';
     try {
       localStorage.setItem(
         'spark-room-v4',
         JSON.stringify({ version: 1, room }),
       );
-      setStorageStatus(
-        'Saved on this device · use one tab to avoid conflicting edits',
-      );
     } catch {
-      setStorageStatus(
-        'Room could not be saved. Keep the page open and export a copy.',
-      );
+      receipt =
+        'Room could not be saved. Keep the page open and export a copy.';
     }
+    queueMicrotask(() => {
+      if (active) setStorageStatus(receipt);
+    });
+    return () => {
+      active = false;
+    };
   }, [room, ready]);
   const mutate = useCallback(
     (tool: string, result: string, fn: (s: Room) => Room) => {
@@ -287,7 +289,6 @@ export default function SparkWorkspace() {
   useEffect(() => {
     const mc = (document as Document & { modelContext?: ModelContext })
       .modelContext;
-    setConnected(false);
     if (!ready || !mc?.registerTool) return;
     const controller = new AbortController();
     const tools: Tool[] = [
@@ -322,7 +323,11 @@ export default function SparkWorkspace() {
           const member = {
             id: crypto.randomUUID(),
             color: '#34a7b7',
-            ...input,
+            name: input.name,
+            kind: input.kind as Member['kind'],
+            role: input.role,
+            ...(input.reportsTo ? { reportsTo: input.reportsTo } : {}),
+            ...(input.provider ? { provider: input.provider } : {}),
           };
           mutate('join_room', 'ROLE CREATED', (s) => ({
             ...s,
@@ -380,7 +385,9 @@ export default function SparkWorkspace() {
         execute: async (input) => {
           const ember = {
             id: crypto.randomUUID(),
-            ...input,
+            author: input.author,
+            kind: input.kind as Ember['kind'],
+            text: input.text,
             source: sourceLink(input.source),
           };
           mutate('add_ember', 'CAUGHT', (s) => ({
@@ -534,7 +541,7 @@ export default function SparkWorkspace() {
           'return_value',
           'pass_spark',
         ].includes(t.name);
-        const definition = t.inputSchema as any;
+        const definition = t.inputSchema;
         if (guarded) {
           definition.properties.expectedSparkId = str(120);
           definition.required.push('expectedSparkId');
@@ -553,10 +560,8 @@ export default function SparkWorkspace() {
                   throw Error('Tool registration expired.');
                 const input = validateToolInput(raw, definition);
                 if (writes) checkRoomMutation(ref.current, t.name, input);
-                const { expectedSparkId, ...fields } = input as Record<
-                  string,
-                  string
-                >;
+                const { expectedSparkId: _expectedSparkId, ...fields } =
+                  input as Record<string, string>;
                 return await t.execute(fields);
               } catch (error) {
                 return JSON.stringify({
@@ -571,7 +576,7 @@ export default function SparkWorkspace() {
           { signal: controller.signal },
         );
       });
-      Promise.all(registrations)
+      Promise.all(registrations.map((value) => Promise.resolve(value)))
         .then(() => {
           if (!controller.signal.aborted) setConnected(true);
         })
@@ -599,7 +604,7 @@ export default function SparkWorkspace() {
         stage === 0 ? 'ember' : stage === 1 ? 'experiment' : 'returned',
       );
   };
-  const submitContribution = (e: FormEvent<HTMLFormElement>) => {
+  const submitContribution = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!action) return;
     try {
@@ -617,7 +622,7 @@ export default function SparkWorkspace() {
       );
     }
   };
-  const submit = (e: FormEvent<HTMLFormElement>) => {
+  const submit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const d = new FormData(e.currentTarget);
@@ -659,7 +664,7 @@ export default function SparkWorkspace() {
         : 'Withdrawn from view, but storage cleanup failed. Old saved data may remain; clear this site data in browser settings.',
     );
   };
-  const saveConsent = (e: FormEvent<HTMLFormElement>) => {
+  const saveConsent = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const d = new FormData(e.currentTarget);
@@ -689,7 +694,11 @@ export default function SparkWorkspace() {
       </a>
       <div className="spectrum" />
       <header className="topbar">
-        <a className="brand" href="#top">
+        <a
+          className="brand"
+          href="#top"
+          aria-label="The Spark Between Us — story"
+        >
           <span className="brand-orbit">
             <i />
           </span>
@@ -807,9 +816,7 @@ export default function SparkWorkspace() {
             Value returns.
           </p>
         </header>
-        <p className="storage-status" role="status">
-          {storageStatus}
-        </p>
+        <output className="storage-status">{storageStatus}</output>
         <div className="contribution-controls">
           <button onClick={() => setComposer(true)}>
             <Plus /> Share one observation
@@ -908,7 +915,7 @@ export default function SparkWorkspace() {
             )}
             {stage === 1 && (
               <div className="embers">
-                <label>WHAT CAUGHT ELSEWHERE</label>
+                <p className="section-kicker">WHAT CAUGHT ELSEWHERE</p>
                 {room.embers.map((e, i) => (
                   <article
                     key={e.id}
@@ -923,7 +930,7 @@ export default function SparkWorkspace() {
             )}
             {stage === 2 && room.experiment && (
               <div className="experiment">
-                <label>THE SMALLEST HONEST TEST</label>
+                <p className="section-kicker">THE SMALLEST HONEST TEST</p>
                 <h3>{room.experiment.question}</h3>
                 <div>
                   <TestTube2 />
@@ -942,7 +949,7 @@ export default function SparkWorkspace() {
             )}
             {stage === 3 && room.returned && (
               <div className="returned">
-                <label>WHAT CAME BACK</label>
+                <p className="section-kicker">WHAT CAME BACK</p>
                 <Sparkles />
                 <h3>{room.returned.learned}</h3>
                 <p>{room.returned.changed}</p>
@@ -1087,9 +1094,9 @@ export default function SparkWorkspace() {
               </details>
             </>
           ) : (
-            <p role="status">
+            <output>
               Withdrawn locally. Share a new spark when you choose.
-            </p>
+            </output>
           )}
           {formError && <p role="alert">{formError}</p>}
         </details>
@@ -1388,18 +1395,18 @@ export default function SparkWorkspace() {
               <ShieldCheck /> SPARK COMPANION
             </span>
             <h3>Intent before action.</h3>
-            <label>
+            <div className="companion-field">
               MY PURPOSE
               <strong>
                 Help people learn without replacing their judgment.
               </strong>
-            </label>
-            <label>
+            </div>
+            <div className="companion-field">
               PROTECT<strong>Consent · credit · human choice</strong>
-            </label>
-            <label>
+            </div>
+            <div className="companion-field">
               PAUSE BEFORE<strong>Send · publish · buy · delete</strong>
-            </label>
+            </div>
           </div>
           <div className="companion-result">
             <small>WHEN AN ACTION CROSSES THE LINE</small>
@@ -1499,11 +1506,11 @@ export default function SparkWorkspace() {
               </label>
             </details>
             {formError && <p role="alert">{formError}</p>}
-            <p role="status">
+            <output>
               {draftSaved
                 ? 'Your draft stays on this device. Close and come back when you have energy.'
                 : 'Draft could not be saved on this device. Keep this window open until you share.'}
-            </p>
+            </output>
             <button className="submit" type="submit">
               <Send /> Offer this unfinished
             </button>

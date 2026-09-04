@@ -1,0 +1,12 @@
+
+  vinext build  (Vite 8.0.13)
+
+Error: EPERM, Permission denied: \\?\C:\Users\BobvandenHeuvel\Documents\New project\spark-evidence\dist '\\?\C:\Users\BobvandenHeuvel\Documents\New project\spark-evidence\dist'
+    at Object.rmSync (node:fs:1283:18)
+    at cleanBuildOutput (file:///C:/Users/BobvandenHeuvel/Documents/New%20project/spark-evidence/node_modules/.pnpm/vinext@1.0.0-beta.5_@vitejs_7b9ecacf351383b48a10dc0024a5956d/node_modules/vinext/dist/build/clean-output.js:24:5)
+    at buildApp (file:///C:/Users/BobvandenHeuvel/Documents/New%20project/spark-evidence/node_modules/.pnpm/vinext@1.0.0-beta.5_@vitejs_7b9ecacf351383b48a10dc0024a5956d/node_modules/vinext/dist/cli.js:319:2) {
+  errno: 1,
+  code: 'EPERM',
+  path: '\\\\?\\C:\\Users\\BobvandenHeuvel\\Documents\\New project\\spark-evidence\\dist',
+  syscall: 'rm'
+}
